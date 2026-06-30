@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المحنكين | ملوك التوقعات</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pitch-night:#0E2A1F;
+    --turf-mid:#163A28;
+    --turf-card:#1B4530;
+    --pitch-line:#EDEAE0;
+    --gold:#F4B731;
+    --gold-dim:#9C7A22;
+    --away-red:#D6584A;
+    --ink:#08140F;
+    --muted:#9FB8AA;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse at 50% -10%, #1d4a32 0%, var(--pitch-night) 55%),
+      var(--pitch-night);
+    color:var(--pitch-line);
+    font-family:'Tajawal',sans-serif;
+    min-height:100vh;
+  }
+  .display{font-family:'Cairo',sans-serif;}
+  .wrap{max-width:880px;margin:0 auto;padding:20px 16px 80px;}
+
+  /* Top floodlight bar */
+  .stadium-header{
+    text-align:center;
+    padding:34px 16px 22px;
+    position:relative;
+    overflow:hidden;
+  }
+  .stadium-header::before{
+    content:"";
+    position:absolute;top:-60px;left:50%;transform:translateX(-50%);
+    width:600px;height:200px;
+    background:radial-gradient(ellipse, rgba(244,183,49,0.25) 0%, transparent 70%);
+    pointer-events:none;
+  }
+  .eyebrow{
+    display:inline-block;
+    font-size:12px;letter-spacing:3px;color:var(--gold);
+    border:1px solid var(--gold-dim);
+    padding:4px 14px;border-radius:999px;
+    margin-bottom:14px;
+  }
+  h1.title{
+    font-size:clamp(28px,6vw,44px);
+    margin:0;
+    font-weight:900;
+    color:var(--pitch-line);
+    text-shadow:0 0 30px rgba(244,183,49,0.25);
+  }
+  h1.title span{color:var(--gold);}
+  .subtitle{color:var(--muted);margin-top:8px;font-size:15px;}
+
+  /* Generic card */
+  .card{
+    background:var(--turf-card);
+    border:1px solid rgba(237,234,224,0.08);
+    border-radius:16px;
+    padding:20px;
+    margin-bottom:16px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.25);
+  }
+  .card h2{font-family:'Cairo',sans-serif;font-size:18px;margin:0 0 14px;color:var(--pitch-line);}
+  .card h2 .num{color:var(--gold);}
+
+  input[type=text], input[type=password]{
+    width:100%;
+    background:var(--pitch-night);
+    border:1px solid rgba(237,234,224,0.15);
+    color:var(--pitch-line);
+    padding:13px 14px;
+    border-radius:10px;
+    font-family:'Tajawal',sans-serif;
+    font-size:15px;
+  }
+  input::placeholder{color:#6e8678;}
+  input:focus{outline:2px solid var(--gold);outline-offset:1px;}
+
+  button{
+    cursor:pointer;
+    font-family:'Cairo',sans-serif;
+    font-weight:700;
+    border:none;
+    border-radius:10px;
+    padding:13px 20px;
+    font-size:15px;
+    transition:transform .12s ease, filter .12s ease;
+  }
+  button:active{transform:scale(0.97);}
+  .btn-gold{background:var(--gold);color:var(--ink);}
+  .btn-gold:hover{filter:brightness(1.08);}
+  .btn-ghost{background:transparent;border:1px solid rgba(237,234,224,0.25);color:var(--pitch-line);}
+  .btn-ghost:hover{border-color:var(--gold);color:var(--gold);}
+  .btn-row{display:flex;gap:10px;flex-wrap:wrap;}
+  .btn-sm{padding:8px 14px;font-size:13px;border-radius:8px;}
+
+  /* Nav tabs */
+  .tabs{display:flex;gap:8px;margin-bottom:18px;overflow-x:auto;padding-bottom:2px;}
+  .tab{
+    flex:0 0 auto;
+    padding:10px 18px;
+    border-radius:999px;
+    background:transparent;
+    border:1px solid rgba(237,234,224,0.15);
+    color:var(--muted);
+    font-family:'Cairo',sans-serif;
+    font-weight:700;
+    font-size:14px;
+    white-space:nowrap;
+  }
+  .tab.active{background:var(--gold);color:var(--ink);border-color:var(--gold);}
+
+  .userbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;color:var(--muted);font-size:14px;}
+  .userbar b{color:var(--gold);}
+  .userbar a{color:var(--muted);text-decoration:underline;cursor:pointer;font-size:13px;}
+
+  /* Team chip grid */
+  .chip-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;}
+  .chip{
+    display:flex;align-items:center;gap:8px;
+    background:var(--pitch-night);
+    border:1.5px solid rgba(237,234,224,0.12);
+    border-radius:10px;
+    padding:10px 12px;
+    cursor:pointer;
+    font-size:14px;
+    user-select:none;
+    transition:all .12s ease;
+  }
+  .chip .flag{font-size:18px;}
+  .chip:hover{border-color:rgba(244,183,49,0.5);}
+  .chip.selected{
+    border-color:var(--gold);
+    background:rgba(244,183,49,0.12);
+    color:var(--gold);
+    font-weight:700;
+  }
+  .chip.disabled{opacity:0.3;cursor:not-allowed;}
+  .chip.champ-selected{
+    border-color:var(--gold);
+    background:linear-gradient(135deg, rgba(244,183,49,0.25), rgba(244,183,49,0.05));
+  }
+
+  .stage-progress{display:flex;align-items:center;gap:6px;margin-bottom:18px;flex-wrap:wrap;}
+  .stage-dot{
+    flex:1;min-width:60px;text-align:center;
+    padding:8px 4px;border-radius:8px;
+    font-size:11px;font-family:'Cairo',sans-serif;font-weight:700;
+    background:rgba(255,255,255,0.04);
+    color:var(--muted);
+    border:1px solid transparent;
+  }
+  .stage-dot.done{background:rgba(244,183,49,0.15);color:var(--gold);border-color:var(--gold-dim);}
+  .stage-dot.current{border-color:var(--gold);color:var(--pitch-line);}
+
+  .counter{font-size:13px;color:var(--muted);margin-bottom:12px;}
+  .counter b{color:var(--gold);}
+
+  /* Leaderboard */
+  table{width:100%;border-collapse:collapse;font-size:14px;}
+  th{text-align:right;color:var(--muted);font-weight:600;font-size:12px;padding:8px 10px;border-bottom:1px solid rgba(237,234,224,0.1);}
+  td{padding:10px;border-bottom:1px solid rgba(237,234,224,0.06);}
+  tr.me{background:rgba(244,183,49,0.08);}
+  .rank{font-family:'Cairo',sans-serif;font-weight:900;color:var(--gold);width:30px;}
+  .rank.g1{color:#F4B731;}
+  .rank.g2{color:#C9C9C9;}
+  .rank.g3{color:#CD8B4D;}
+
+  .empty{text-align:center;color:var(--muted);padding:30px 10px;font-size:14px;}
+
+  .group-card{display:flex;justify-content:space-between;align-items:center;background:var(--pitch-night);border-radius:10px;padding:14px 16px;margin-bottom:10px;border:1px solid rgba(237,234,224,0.08);}
+  .group-card .meta{font-size:12px;color:var(--muted);margin-top:4px;}
+  .code-badge{font-family:'Cairo',sans-serif;background:rgba(244,183,49,0.12);color:var(--gold);padding:4px 10px;border-radius:6px;font-size:13px;letter-spacing:1px;}
+
+  .toast{
+    position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+    background:var(--gold);color:var(--ink);
+    padding:12px 22px;border-radius:999px;
+    font-family:'Cairo',sans-serif;font-weight:700;font-size:14px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.4);
+    opacity:0;pointer-events:none;
+    transition:opacity .25s ease, transform .25s ease;
+    z-index:100;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(-6px);}
+
+  .admin-link{position:fixed;bottom:10px;left:10px;font-size:11px;color:#2d4a3a;text-decoration:none;}
+  .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:none;align-items:center;justify-content:center;z-index:200;padding:16px;}
+  .modal-bg.show{display:flex;}
+  .modal{background:var(--turf-card);border-radius:16px;padding:24px;max-width:380px;width:100%;}
+
+  ::-webkit-scrollbar{height:6px;}
+</style>
+</head>
+<body>
+
+<div class="wrap" id="app"></div>
+<div class="toast" id="toast"></div>
+
+<div class="modal-bg" id="adminModal">
+  <div class="modal">
+    <h2 class="display" style="margin-top:0">دخول الأدمن</h2>
+    <p style="color:var(--muted);font-size:13px;margin-top:-8px;">أدخل الرمز السري لتحديث النتائج الفعلية</p>
+    <input type="password" id="adminPinInput" placeholder="الرمز السري" style="margin-bottom:12px;">
+    <div class="btn-row">
+      <button class="btn-gold" onclick="checkAdminPin()">دخول</button>
+      <button class="btn-ghost" onclick="closeAdminModal()">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<a href="#" class="admin-link" onclick="openAdminModal();return false;">⚙</a>
+
+<script>
+/* ============ DATA ============ */
+const TEAMS = [
+  {id:"mex",name:"المكسيك",flag:"🇲🇽"},{id:"rsa",name:"جنوب أفريقيا",flag:"🇿🇦"},
+  {id:"sui",name:"سويسرا",flag:"🇨🇭"},{id:"can",name:"كندا",flag:"🇨🇦"},{id:"bih",name:"البوسنة والهرسك",flag:"🇧🇦"},
+  {id:"bra",name:"البرازيل",flag:"🇧🇷"},{id:"mar",name:"المغرب",flag:"🇲🇦"},
+  {id:"usa",name:"الولايات المتحدة",flag:"🇺🇸"},{id:"aus",name:"أستراليا",flag:"🇦🇺"},{id:"par",name:"باراغواي",flag:"🇵🇾"},
+  {id:"ger",name:"ألمانيا",flag:"🇩🇪"},{id:"civ",name:"كوت ديفوار",flag:"🇨🇮"},{id:"ecu",name:"إكوادور",flag:"🇪🇨"},
+  {id:"ned",name:"هولندا",flag:"🇳🇱"},{id:"jpn",name:"اليابان",flag:"🇯🇵"},{id:"swe",name:"السويد",flag:"🇸🇪"},
+  {id:"bel",name:"بلجيكا",flag:"🇧🇪"},{id:"egy",name:"مصر",flag:"🇪🇬"},
+  {id:"esp",name:"إسبانيا",flag:"🇪🇸"},{id:"cpv",name:"كاب فيردي",flag:"🇨🇻"},
+  {id:"fra",name:"فرنسا",flag:"🇫🇷"},{id:"nor",name:"النرويج",flag:"🇳🇴"},{id:"sen",name:"السنغال",flag:"🇸🇳"},
+  {id:"arg",name:"الأرجنتين",flag:"🇦🇷"},{id:"aut",name:"النمسا",flag:"🇦🇹"},{id:"alg",name:"الجزائر",flag:"🇩🇿"},
+  {id:"col",name:"كولومبيا",flag:"🇨🇴"},{id:"por",name:"البرتغال",flag:"🇵🇹"},{id:"cod",name:"الكونغو الديمقراطية",flag:"🇨🇩"},
+  {id:"eng",name:"إنجلترا",flag:"🏴"},{id:"cro",name:"كرواتيا",flag:"🇭🇷"},{id:"gha",name:"غانا",flag:"🇬🇭"}
+];
+const TEAM_MAP = Object.fromEntries(TEAMS.map(t=>[t.id,t]));
+
+const STAGES = [
+  {key:"r16", label:"دور الـ16", from:32, pick:16},
+  {key:"qf",  label:"ربع النهائي", from:16, pick:8},
+  {key:"sf",  label:"نصف النهائي", from:8, pick:4},
+  {key:"fin", label:"النهائي", from:4, pick:2},
+  {key:"champ", label:"البطل", from:2, pick:1}
+];
+const ADMIN_PIN = "2026";
+
+/* ============ STATE ============ */
+let state = {
+  username: null,
+  screen: "login",   // login | home
+  tab: "predict",    // predict | global | groups
+  draft: null,       // working copy of predictions while editing
+  groupView: null,   // group id being viewed
+  adminMode: false
+};
+
+/* ============ STORAGE HELPERS ============ */
+async function storeGet(key){
+  try{ const r = await window.storage.get(key, true); return r ? JSON.parse(r.value) : null; }
+  catch(e){ return null; }
+}
+async function storeSet(key, val){
+  try{ await window.storage.set(key, JSON.stringify(val), true); return true; }
+  catch(e){ console.error(e); return false; }
+}
+
+async function getUsers(){ return (await storeGet("wc-users")) || []; }
+async function ensureUser(name){
+  const users = await getUsers();
+  if(!users.includes(name)){
+    users.push(name);
+    await storeSet("wc-users", users);
+  }
+}
+async function getPrediction(name){ return await storeGet("wc-pred-"+name); }
+async function savePrediction(name, pred){ return await storeSet("wc-pred-"+name, pred); }
+async function getResults(){ return (await storeGet("wc-results")) || {}; }
+async function saveResults(res){ return await storeSet("wc-results", res); }
+async function getGroups(){ return (await storeGet("wc-groups")) || []; }
+async function saveGroups(g){ return await storeSet("wc-groups", g); }
+
+function showToast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"), 2200);
+}
+
+function genCode(){
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let c = "";
+  for(let i=0;i<5;i++) c += chars[Math.floor(Math.random()*chars.length)];
+  return c;
+}
+
+/* ============ SCORING ============ */
+function scorePrediction(pred, results){
+  if(!pred || !results) return {total:0, breakdown:{}};
+  let total = 0;
+  const breakdown = {};
+  STAGES.forEach(s=>{
+    const userArr = pred[s.key] || [];
+    const realArr = results[s.key] || [];
+    const correct = userArr.filter(id => realArr.includes(id)).length;
+    breakdown[s.key] = correct;
+    total += correct;
+  });
+  return {total, breakdown};
+}
+
+/* ============ RENDER ROOT ============ */
+async function render(){
+  const app = document.getElementById("app");
+  if(state.screen === "login"){
+    app.innerHTML = renderLogin();
+    return;
+  }
+  app.innerHTML = `
+    <div class="stadium-header">
+      <span class="eyebrow">FIFA WORLD CUP 2026</span>
+      <h1 class="title">المحنكين <span>ملوك التوقعات</span></h1>
+      <div class="subtitle">من دور الـ32 وحتى رفع الكأس 🏆</div>
+    </div>
+    <div class="userbar">
+      <div>أهلاً، <b>${escapeHtml(state.username)}</b></div>
+      <a onclick="logout()">تسجيل خروج</a>
+    </div>
+    <div class="tabs">
+      <button class="tab ${state.tab==='predict'?'active':''}" onclick="setTab('predict')">توقعاتي</button>
+      <button class="tab ${state.tab==='global'?'active':''}" onclick="setTab('global')">الترتيب العام</button>
+      <button class="tab ${state.tab==='groups'?'active':''}" onclick="setTab('groups')">مجموعاتي</button>
+    </div>
+    <div id="tabContent"></div>
+  `;
+  const content = document.getElementById("tabContent");
+  if(state.tab === "predict"){
+    content.innerHTML = await renderPredictTab();
+    wirePredictTab();
+  } else if(state.tab === "global"){
+    content.innerHTML = await renderGlobalTab();
+  } else if(state.tab === "groups"){
+    content.innerHTML = await renderGroupsTab();
+    wireGroupsTab();
+  }
+}
+
+function renderLogin(){
+  return `
+    <div class="stadium-header">
+      <span class="eyebrow">FIFA WORLD CUP 2026</span>
+      <h1 class="title">المحنكين <span>ملوك التوقعات</span></h1>
+      <div class="subtitle">توقع المتأهلين دور بعد دور... ونافس أصدقاءك على القمة</div>
+    </div>
+    <div class="card" style="max-width:380px;margin:0 auto;">
+      <h2><span class="num">⚽</span> ادخل اسمك للبدء</h2>
+      <input type="text" id="loginName" placeholder="اسم المستخدم" maxlength="20" style="margin-bottom:12px;">
+      <button class="btn-gold" style="width:100%" onclick="doLogin()">دخول</button>
+      <p style="color:var(--muted);font-size:12px;margin-top:14px;line-height:1.7;">
+        مفيش باسورد، بس اختار اسم مميز يعرفك بيه أصحابك في الترتيب 👀
+      </p>
+    </div>
+  `;
+}
+
+async function doLogin(){
+  const val = document.getElementById("loginName").value.trim();
+  if(!val){ showToast("اكتب اسم الأول 🙏"); return; }
+  if(val.length < 2){ showToast("الاسم قصير أوي"); return; }
+  await ensureUser(val);
+  state.username = val;
+  state.screen = "home";
+  state.tab = "predict";
+  await render();
+}
+
+function logout(){
+  state.username = null;
+  state.screen = "login";
+  render();
+}
+
+function setTab(t){
+  state.tab = t;
+  state.groupView = null;
+  render();
+}
+
+function escapeHtml(s){
+  return (s||"").replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+}
+
+/* ============ PREDICT TAB ============ */
+async function renderPredictTab(){
+  const saved = await getPrediction(state.username);
+  if(!state.draft){
+    state.draft = saved ? JSON.parse(JSON.stringify(saved)) : {r16:[],qf:[],sf:[],fin:[],champ:[]};
+  }
+  let html = `<div class="card"><div class="stage-progress">`;
+  STAGES.forEach((s,i)=>{
+    const filled = (state.draft[s.key]||[]).length === s.pick;
+    html += `<div class="stage-dot ${filled?'done':''}">${s.label}</div>`;
+  });
+  html += `</div>`;
+
+  STAGES.forEach((s,i)=>{
+    const pool = i===0 ? TEAMS.map(t=>t.id) : (state.draft[STAGES[i-1].key]||[]);
+    const selected = state.draft[s.key]||[];
+    const poolReady = pool.length === s.from;
+    html += `<div style="margin-bottom:22px;">
+      <h2 style="margin-bottom:4px;">${s.label}</h2>
+      <div class="counter">اختر <b>${s.pick}</b> من ${s.from} — تم اختيار <b>${selected.length}</b></div>
+      <div class="chip-grid">`;
+    if(poolReady){
+      pool.forEach(id=>{
+        const t = TEAM_MAP[id];
+        const isSel = selected.includes(id);
+        html += `<div class="chip ${isSel?'selected':''}" data-stage="${s.key}" data-id="${id}" onclick="toggleTeam('${s.key}','${id}',${s.pick})">
+          <span class="flag">${t.flag}</span><span>${t.name}</span>
+        </div>`;
+      });
+    } else {
+      html += `<div class="empty" style="grid-column:1/-1;">كمّل الدور اللي قبله الأول ⬆️</div>`;
+    }
+    html += `</div></div>`;
+  });
+
+  html += `<div class="btn-row"><button class="btn-gold" onclick="savePredictionDraft()">حفظ توقعاتي</button>
+  <button class="btn-ghost" onclick="resetDraft()">إعادة تعيين</button></div></div>`;
+  return html;
+}
+
+function wirePredictTab(){}
+
+function toggleTeam(stageKey, id, maxPick){
+  const arr = state.draft[stageKey] || (state.draft[stageKey]=[]);
+  const idx = arr.indexOf(id);
+  if(idx >= 0){
+    arr.splice(idx,1);
+    clearDownstream(stageKey);
+  } else {
+    if(arr.length >= maxPick){ showToast(`تقدر تختار ${maxPick} بس في الدور ده`); return; }
+    arr.push(id);
+    if(arr.length === maxPick) clearDownstream(stageKey);
+  }
+  render();
+}
+
+function clearDownstream(stageKey){
+  const idx = STAGES.findIndex(s=>s.key===stageKey);
+  for(let j=idx+1;j<STAGES.length;j++){
+    const k = STAGES[j].key;
+    const pool = state.draft[STAGES[j-1].key]||[];
+    state.draft[k] = (state.draft[k]||[]).filter(id=>pool.includes(id));
+  }
+}
+
+async function savePredictionDraft(){
+  const last = STAGES[STAGES.length-1];
+  await savePrediction(state.username, state.draft);
+  showToast("اتحفظت توقعاتك ✅");
+  render();
+}
+
+function resetDraft(){
+  state.draft = {r16:[],qf:[],sf:[],fin:[],champ:[]};
+  render();
+}
+
+/* ============ GLOBAL TAB ============ */
+async function renderGlobalTab(){
+  const users = await getUsers();
+  const results = await getResults();
+  const hasResults = STAGES.some(s => (results[s.key]||[]).length);
+  const rows = [];
+  for(const u of users){
+    const pred = await getPrediction(u);
+    const sc = scorePrediction(pred, results);
+    rows.push({user:u, total:sc.total});
+  }
+  rows.sort((a,b)=>b.total-a.total);
+
+  let html = `<div class="card">
+    <h2><span class="num">🏆</span> الترتيب العام — كل المسجلين</h2>`;
+  if(!hasResults){
+    html += `<div class="empty">لسه مفيش نتائج فعلية اتسجلت. الترتيب هيظهر أول ما الأدوار تبدأ تتحسم.</div>`;
+  }
+  if(rows.length === 0){
+    html += `<div class="empty">محدش سجل توقعات لسه</div>`;
+  } else {
+    html += `<table><thead><tr><th>#</th><th>الاسم</th><th>النقاط</th></tr></thead><tbody>`;
+    rows.forEach((r,i)=>{
+      const rankClass = i===0?'g1':i===1?'g2':i===2?'g3':'';
+      html += `<tr class="${r.user===state.username?'me':''}">
+        <td class="rank ${rankClass}">${i+1}</td>
+        <td>${escapeHtml(r.user)}${r.user===state.username?' (انت)':''}</td>
+        <td>${r.total} / 31</td>
+      </tr>`;
+    });
+    html += `</tbody></table>`;
+  }
+  html += `</div>`;
+  return html;
+}
+
+/* ============ GROUPS TAB ============ */
+async function renderGroupsTab(){
+  const groups = await getGroups();
+  const myGroups = groups.filter(g => g.members.includes(state.username));
+
+  if(state.groupView){
+    const g = groups.find(x=>x.id===state.groupView);
+    if(!g) { state.groupView=null; return renderGroupsTab(); }
+    const results = await getResults();
+    const rows = [];
+    for(const u of g.members){
+      const pred = await getPrediction(u);
+      const sc = scorePrediction(pred, results);
+      rows.push({user:u, total:sc.total});
+    }
+    rows.sort((a,b)=>b.total-a.total);
+    let html = `<div class="card">
+      <a onclick="backToGroups()" style="color:var(--gold);cursor:pointer;font-size:13px;">← رجوع للمجموعات</a>
+      <h2 style="margin-top:10px;"><span class="num">👥</span> ${escapeHtml(g.name)}</h2>
+      <div class="counter">كود الدعوة: <span class="code-badge">${g.code}</span> &nbsp; (${g.members.length} أعضاء)</div>
+      <table><thead><tr><th>#</th><th>الاسم</th><th>النقاط</th></tr></thead><tbody>`;
+    rows.forEach((r,i)=>{
+      const rankClass = i===0?'g1':i===1?'g2':i===2?'g3':'';
+      html += `<tr class="${r.user===state.username?'me':''}">
+        <td class="rank ${rankClass}">${i+1}</td>
+        <td>${escapeHtml(r.user)}</td>
+        <td>${r.total} / 31</td>
+      </tr>`;
+    });
+    html += `</tbody></table></div>`;
+    return html;
+  }
+
+  let html = `<div class="card">
+    <h2><span class="num">＋</span> إنشاء مجموعة جديدة</h2>
+    <input type="text" id="newGroupName" placeholder="اسم المجموعة (مثلاً: شلة الكلية)" style="margin-bottom:10px;">
+    <button class="btn-gold" onclick="createGroup()">إنشاء المجموعة</button>
+  </div>
+  <div class="card">
+    <h2><span class="num">🔑</span> انضم لمجموعة بكود</h2>
+    <input type="text" id="joinCode" placeholder="اكتب كود المجموعة" style="margin-bottom:10px;text-transform:uppercase;">
+    <button class="btn-gold" onclick="joinGroup()">انضمام</button>
+  </div>
+  <div class="card">
+    <h2><span class="num">📋</span> مجموعاتي</h2>`;
+  if(myGroups.length === 0){
+    html += `<div class="empty">لسه مش منضم لأي مجموعة. اعمل واحدة أو انضم بكود!</div>`;
+  } else {
+    myGroups.forEach(g=>{
+      html += `<div class="group-card" onclick="viewGroup('${g.id}')" style="cursor:pointer;">
+        <div>
+          <div style="font-weight:700;">${escapeHtml(g.name)}</div>
+          <div class="meta">${g.members.length} أعضاء</div>
+        </div>
+        <span class="code-badge">${g.code}</span>
+      </div>`;
+    });
+  }
+  html += `</div>`;
+  return html;
+}
+
+function wireGroupsTab(){}
+
+async function createGroup(){
+  const name = document.getElementById("newGroupName").value.trim();
+  if(!name){ showToast("اكتب اسم المجموعة"); return; }
+  const groups = await getGroups();
+  const g = {id:"g"+Date.now(), name, code:genCode(), owner:state.username, members:[state.username]};
+  groups.push(g);
+  await saveGroups(groups);
+  showToast("اتعملت المجموعة 🎉");
+  render();
+}
+
+async function joinGroup(){
+  const code = document.getElementById("joinCode").value.trim().toUpperCase();
+  if(!code){ showToast("اكتب الكود"); return; }
+  const groups = await getGroups();
+  const g = groups.find(x=>x.code===code);
+  if(!g){ showToast("الكود مش موجود"); return; }
+  if(!g.members.includes(state.username)){
+    g.members.push(state.username);
+    await saveGroups(groups);
+  }
+  showToast(`انضميت لـ ${g.name} ✅`);
+  render();
+}
+
+function viewGroup(id){
+  state.groupView = id;
+  render();
+}
+function backToGroups(){
+  state.groupView = null;
+  render();
+}
+
+/* ============ ADMIN ============ */
+function openAdminModal(){
+  document.getElementById("adminModal").classList.add("show");
+}
+function closeAdminModal(){
+  document.getElementById("adminModal").classList.remove("show");
+  document.getElementById("adminPinInput").value = "";
+}
+async function checkAdminPin(){
+  const val = document.getElementById("adminPinInput").value;
+  if(val === ADMIN_PIN){
+    closeAdminModal();
+    state.adminMode = true;
+    await renderAdmin();
+  } else {
+    showToast("الرمز غلط");
+  }
+}
+
+async function renderAdmin(){
+  const app = document.getElementById("app");
+  const results = await getResults();
+  if(!state._adminDraft){
+    state._adminDraft = JSON.parse(JSON.stringify(results.r16 || results.qf || results.sf || results.fin || results.champ ? results : {r16:[],qf:[],sf:[],fin:[],champ:[]}));
+    STAGES.forEach(s=>{ if(!state._adminDraft[s.key]) state._adminDraft[s.key] = []; });
+  }
+  let html = `<div class="stadium-header">
+    <span class="eyebrow">ADMIN PANEL</span>
+    <h1 class="title">تحديث <span>النتائج الفعلية</span></h1>
+    <div class="subtitle">اللي تحفظه هنا هو اللي هيتحسب بيه ترتيب الجميع</div>
+  </div>
+  <div class="userbar"><div></div><a onclick="exitAdmin()">رجوع للموقع</a></div>
+  <div class="card">`;
+
+  STAGES.forEach((s,i)=>{
+    const pool = i===0 ? TEAMS.map(t=>t.id) : (state._adminDraft[STAGES[i-1].key]||[]);
+    const selected = state._adminDraft[s.key]||[];
+    const poolReady = pool.length === s.from;
+    html += `<div style="margin-bottom:22px;">
+      <h2 style="margin-bottom:4px;">${s.label} (الفعلي)</h2>
+      <div class="counter">حدد <b>${s.pick}</b> من ${s.from} — محدد <b>${selected.length}</b></div>
+      <div class="chip-grid">`;
+    if(poolReady){
+      pool.forEach(id=>{
+        const t = TEAM_MAP[id];
+        const isSel = selected.includes(id);
+        html += `<div class="chip ${isSel?'selected':''}" onclick="toggleAdminTeam('${s.key}','${id}',${s.pick})">
+          <span class="flag">${t.flag}</span><span>${t.name}</span>
+        </div>`;
+      });
+    } else {
+      html += `<div class="empty" style="grid-column:1/-1;">كمّل الدور اللي قبله الأول ⬆️</div>`;
+    }
+    html += `</div></div>`;
+  });
+
+  html += `<div class="btn-row"><button class="btn-gold" onclick="saveAdminResults()">حفظ النتائج الفعلية</button></div></div>`;
+  app.innerHTML = html;
+}
+
+function toggleAdminTeam(stageKey, id, maxPick){
+  const arr = state._adminDraft[stageKey] || (state._adminDraft[stageKey]=[]);
+  const idx = arr.indexOf(id);
+  if(idx>=0){
+    arr.splice(idx,1);
+    clearAdminDownstream(stageKey);
+  } else {
+    if(arr.length >= maxPick){ showToast(`الدور ده ${maxPick} بس`); return; }
+    arr.push(id);
+    if(arr.length === maxPick) clearAdminDownstream(stageKey);
+  }
+  renderAdmin();
+}
+function clearAdminDownstream(stageKey){
+  const idx = STAGES.findIndex(s=>s.key===stageKey);
+  for(let j=idx+1;j<STAGES.length;j++){
+    const k = STAGES[j].key;
+    const pool = state._adminDraft[STAGES[j-1].key]||[];
+    state._adminDraft[k] = (state._adminDraft[k]||[]).filter(id=>pool.includes(id));
+  }
+}
+async function saveAdminResults(){
+  await saveResults(state._adminDraft);
+  showToast("اتحفظت النتائج الفعلية ✅");
+}
+function exitAdmin(){
+  state.adminMode = false;
+  render();
+}
+
+/* ============ INIT ============ */
+render();
+</script>
+</body>
+</html>
