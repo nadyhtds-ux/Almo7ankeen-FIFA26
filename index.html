@@ -9,7 +9,6 @@
 <style>
   :root{
     --pitch-night:#0E2A1F;
-    --turf-mid:#163A28;
     --turf-card:#1B4530;
     --pitch-line:#EDEAE0;
     --gold:#F4B731;
@@ -21,9 +20,7 @@
   *{box-sizing:border-box;}
   body{
     margin:0;
-    background:
-      radial-gradient(ellipse at 50% -10%, #1d4a32 0%, var(--pitch-night) 55%),
-      var(--pitch-night);
+    background:radial-gradient(ellipse at 50% -10%, #1d4a32 0%, var(--pitch-night) 55%), var(--pitch-night);
     color:var(--pitch-line);
     font-family:'Tajawal',sans-serif;
     min-height:100vh;
@@ -31,181 +28,99 @@
   .display{font-family:'Cairo',sans-serif;}
   .wrap{max-width:880px;margin:0 auto;padding:20px 16px 80px;}
 
-  /* Top floodlight bar */
-  .stadium-header{
-    text-align:center;
-    padding:34px 16px 22px;
-    position:relative;
-    overflow:hidden;
-  }
+  .stadium-header{text-align:center;padding:34px 16px 22px;position:relative;overflow:hidden;}
   .stadium-header::before{
-    content:"";
-    position:absolute;top:-60px;left:50%;transform:translateX(-50%);
-    width:600px;height:200px;
-    background:radial-gradient(ellipse, rgba(244,183,49,0.25) 0%, transparent 70%);
+    content:"";position:absolute;top:-60px;left:50%;transform:translateX(-50%);
+    width:600px;height:200px;background:radial-gradient(ellipse, rgba(244,183,49,0.25) 0%, transparent 70%);
     pointer-events:none;
   }
-  .eyebrow{
-    display:inline-block;
-    font-size:12px;letter-spacing:3px;color:var(--gold);
-    border:1px solid var(--gold-dim);
-    padding:4px 14px;border-radius:999px;
-    margin-bottom:14px;
-  }
-  h1.title{
-    font-size:clamp(28px,6vw,44px);
-    margin:0;
-    font-weight:900;
-    color:var(--pitch-line);
-    text-shadow:0 0 30px rgba(244,183,49,0.25);
-  }
+  .eyebrow{display:inline-block;font-size:12px;letter-spacing:3px;color:var(--gold);border:1px solid var(--gold-dim);padding:4px 14px;border-radius:999px;margin-bottom:14px;}
+  h1.title{font-size:clamp(28px,6vw,44px);margin:0;font-weight:900;color:var(--pitch-line);text-shadow:0 0 30px rgba(244,183,49,0.25);}
   h1.title span{color:var(--gold);}
   .subtitle{color:var(--muted);margin-top:8px;font-size:15px;}
 
-  /* Generic card */
-  .card{
-    background:var(--turf-card);
-    border:1px solid rgba(237,234,224,0.08);
-    border-radius:16px;
-    padding:20px;
-    margin-bottom:16px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.25);
-  }
+  .card{background:var(--turf-card);border:1px solid rgba(237,234,224,0.08);border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 10px 30px rgba(0,0,0,0.25);}
   .card h2{font-family:'Cairo',sans-serif;font-size:18px;margin:0 0 14px;color:var(--pitch-line);}
   .card h2 .num{color:var(--gold);}
 
   input[type=text], input[type=password]{
-    width:100%;
-    background:var(--pitch-night);
-    border:1px solid rgba(237,234,224,0.15);
-    color:var(--pitch-line);
-    padding:13px 14px;
-    border-radius:10px;
-    font-family:'Tajawal',sans-serif;
-    font-size:15px;
+    width:100%;background:var(--pitch-night);border:1px solid rgba(237,234,224,0.15);color:var(--pitch-line);
+    padding:13px 14px;border-radius:10px;font-family:'Tajawal',sans-serif;font-size:15px;
   }
   input::placeholder{color:#6e8678;}
   input:focus{outline:2px solid var(--gold);outline-offset:1px;}
 
-  button{
-    cursor:pointer;
-    font-family:'Cairo',sans-serif;
-    font-weight:700;
-    border:none;
-    border-radius:10px;
-    padding:13px 20px;
-    font-size:15px;
-    transition:transform .12s ease, filter .12s ease;
-  }
+  button{cursor:pointer;font-family:'Cairo',sans-serif;font-weight:700;border:none;border-radius:10px;padding:13px 20px;font-size:15px;transition:transform .12s ease, filter .12s ease;}
   button:active{transform:scale(0.97);}
   .btn-gold{background:var(--gold);color:var(--ink);}
   .btn-gold:hover{filter:brightness(1.08);}
   .btn-ghost{background:transparent;border:1px solid rgba(237,234,224,0.25);color:var(--pitch-line);}
   .btn-ghost:hover{border-color:var(--gold);color:var(--gold);}
   .btn-row{display:flex;gap:10px;flex-wrap:wrap;}
-  .btn-sm{padding:8px 14px;font-size:13px;border-radius:8px;}
 
-  /* Nav tabs */
   .tabs{display:flex;gap:8px;margin-bottom:18px;overflow-x:auto;padding-bottom:2px;}
-  .tab{
-    flex:0 0 auto;
-    padding:10px 18px;
-    border-radius:999px;
-    background:transparent;
-    border:1px solid rgba(237,234,224,0.15);
-    color:var(--muted);
-    font-family:'Cairo',sans-serif;
-    font-weight:700;
-    font-size:14px;
-    white-space:nowrap;
-  }
+  .tab{flex:0 0 auto;padding:10px 18px;border-radius:999px;background:transparent;border:1px solid rgba(237,234,224,0.15);color:var(--muted);font-family:'Cairo',sans-serif;font-weight:700;font-size:14px;white-space:nowrap;}
   .tab.active{background:var(--gold);color:var(--ink);border-color:var(--gold);}
 
   .userbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;color:var(--muted);font-size:14px;}
   .userbar b{color:var(--gold);}
   .userbar a{color:var(--muted);text-decoration:underline;cursor:pointer;font-size:13px;}
 
-  /* Team chip grid */
-  .chip-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;}
-  .chip{
-    display:flex;align-items:center;gap:8px;
-    background:var(--pitch-night);
-    border:1.5px solid rgba(237,234,224,0.12);
-    border-radius:10px;
-    padding:10px 12px;
-    cursor:pointer;
-    font-size:14px;
-    user-select:none;
-    transition:all .12s ease;
-  }
-  .chip .flag{font-size:18px;}
-  .chip:hover{border-color:rgba(244,183,49,0.5);}
-  .chip.selected{
-    border-color:var(--gold);
-    background:rgba(244,183,49,0.12);
-    color:var(--gold);
-    font-weight:700;
-  }
-  .chip.disabled{opacity:0.3;cursor:not-allowed;}
-  .chip.champ-selected{
-    border-color:var(--gold);
-    background:linear-gradient(135deg, rgba(244,183,49,0.25), rgba(244,183,49,0.05));
-  }
+  .conn{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);margin-bottom:14px;}
+  .conn .dot{width:8px;height:8px;border-radius:50%;background:#5a7a68;}
+  .conn .dot.live{background:#3FCF7A;box-shadow:0 0 8px #3FCF7A;}
 
-  .stage-progress{display:flex;align-items:center;gap:6px;margin-bottom:18px;flex-wrap:wrap;}
-  .stage-dot{
-    flex:1;min-width:60px;text-align:center;
-    padding:8px 4px;border-radius:8px;
-    font-size:11px;font-family:'Cairo',sans-serif;font-weight:700;
-    background:rgba(255,255,255,0.04);
-    color:var(--muted);
-    border:1px solid transparent;
+  .round-block{margin-bottom:24px;}
+  .round-title{font-family:'Cairo',sans-serif;font-weight:800;font-size:16px;color:var(--gold);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+  .round-title .line{flex:1;height:1px;background:rgba(244,183,49,0.25);}
+
+  .match-row{
+    display:flex;align-items:center;gap:10px;background:var(--pitch-night);
+    border:1px solid rgba(237,234,224,0.08);border-radius:12px;padding:10px;margin-bottom:8px;
   }
-  .stage-dot.done{background:rgba(244,183,49,0.15);color:var(--gold);border-color:var(--gold-dim);}
-  .stage-dot.current{border-color:var(--gold);color:var(--pitch-line);}
+  .match-row.tbd{opacity:0.45;}
+  .team-pick{
+    flex:1;display:flex;align-items:center;gap:8px;padding:10px 10px;border-radius:9px;cursor:pointer;
+    border:1.5px solid transparent;font-size:14px;transition:all .12s ease;
+  }
+  .team-pick:hover{background:rgba(244,183,49,0.06);}
+  .team-pick.selected{border-color:var(--gold);background:rgba(244,183,49,0.14);color:var(--gold);font-weight:700;}
+  .team-pick .flag{font-size:18px;}
+  .team-pick.correct{border-color:#3FCF7A;background:rgba(63,207,122,0.12);}
+  .team-pick.wrong{border-color:var(--away-red);opacity:0.6;}
+  .vs{font-family:'Cairo',sans-serif;font-size:11px;color:var(--muted);padding:0 4px;}
+  .tbd-label{flex:1;text-align:center;font-size:13px;color:var(--muted);padding:10px;}
 
   .counter{font-size:13px;color:var(--muted);margin-bottom:12px;}
   .counter b{color:var(--gold);}
 
-  /* Leaderboard */
   table{width:100%;border-collapse:collapse;font-size:14px;}
   th{text-align:right;color:var(--muted);font-weight:600;font-size:12px;padding:8px 10px;border-bottom:1px solid rgba(237,234,224,0.1);}
   td{padding:10px;border-bottom:1px solid rgba(237,234,224,0.06);}
   tr.me{background:rgba(244,183,49,0.08);}
   .rank{font-family:'Cairo',sans-serif;font-weight:900;color:var(--gold);width:30px;}
-  .rank.g1{color:#F4B731;}
-  .rank.g2{color:#C9C9C9;}
-  .rank.g3{color:#CD8B4D;}
+  .rank.g1{color:#F4B731;}.rank.g2{color:#C9C9C9;}.rank.g3{color:#CD8B4D;}
 
   .empty{text-align:center;color:var(--muted);padding:30px 10px;font-size:14px;}
 
-  .group-card{display:flex;justify-content:space-between;align-items:center;background:var(--pitch-night);border-radius:10px;padding:14px 16px;margin-bottom:10px;border:1px solid rgba(237,234,224,0.08);}
+  .group-card{display:flex;justify-content:space-between;align-items:center;background:var(--pitch-night);border-radius:10px;padding:14px 16px;margin-bottom:10px;border:1px solid rgba(237,234,224,0.08);cursor:pointer;}
   .group-card .meta{font-size:12px;color:var(--muted);margin-top:4px;}
   .code-badge{font-family:'Cairo',sans-serif;background:rgba(244,183,49,0.12);color:var(--gold);padding:4px 10px;border-radius:6px;font-size:13px;letter-spacing:1px;}
 
-  .toast{
-    position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
-    background:var(--gold);color:var(--ink);
-    padding:12px 22px;border-radius:999px;
-    font-family:'Cairo',sans-serif;font-weight:700;font-size:14px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.4);
-    opacity:0;pointer-events:none;
-    transition:opacity .25s ease, transform .25s ease;
-    z-index:100;
-  }
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--ink);padding:12px 22px;border-radius:999px;font-family:'Cairo',sans-serif;font-weight:700;font-size:14px;box-shadow:0 10px 30px rgba(0,0,0,0.4);opacity:0;pointer-events:none;transition:opacity .25s ease, transform .25s ease;z-index:100;}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(-6px);}
 
   .admin-link{position:fixed;bottom:10px;left:10px;font-size:11px;color:#2d4a3a;text-decoration:none;}
   .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:none;align-items:center;justify-content:center;z-index:200;padding:16px;}
   .modal-bg.show{display:flex;}
   .modal{background:var(--turf-card);border-radius:16px;padding:24px;max-width:380px;width:100%;}
-
-  ::-webkit-scrollbar{height:6px;}
 </style>
 </head>
 <body>
 
-<div class="wrap" id="app"></div>
+<div class="wrap" id="app">
+  <div class="empty" style="padding-top:60px;">⏳ بنتصل بقاعدة البيانات...</div>
+</div>
 <div class="toast" id="toast"></div>
 
 <div class="modal-bg" id="adminModal">
@@ -223,97 +138,208 @@
 <a href="#" class="admin-link" onclick="openAdminModal();return false;">⚙</a>
 
 <script>
-/* ============ DATA ============ */
+/* ============ FIREBASE CONFIG ============ */
+const FIREBASE_URL = "https://elmo7naken-d8901-default-rtdb.firebaseio.com";
+const ADMIN_PIN = "2026";
+
+/* ============ TEAM DATA ============ */
 const TEAMS = [
-  {id:"mex",name:"المكسيك",flag:"🇲🇽"},{id:"rsa",name:"جنوب أفريقيا",flag:"🇿🇦"},
-  {id:"sui",name:"سويسرا",flag:"🇨🇭"},{id:"can",name:"كندا",flag:"🇨🇦"},{id:"bih",name:"البوسنة والهرسك",flag:"🇧🇦"},
-  {id:"bra",name:"البرازيل",flag:"🇧🇷"},{id:"mar",name:"المغرب",flag:"🇲🇦"},
-  {id:"usa",name:"الولايات المتحدة",flag:"🇺🇸"},{id:"aus",name:"أستراليا",flag:"🇦🇺"},{id:"par",name:"باراغواي",flag:"🇵🇾"},
-  {id:"ger",name:"ألمانيا",flag:"🇩🇪"},{id:"civ",name:"كوت ديفوار",flag:"🇨🇮"},{id:"ecu",name:"إكوادور",flag:"🇪🇨"},
-  {id:"ned",name:"هولندا",flag:"🇳🇱"},{id:"jpn",name:"اليابان",flag:"🇯🇵"},{id:"swe",name:"السويد",flag:"🇸🇪"},
-  {id:"bel",name:"بلجيكا",flag:"🇧🇪"},{id:"egy",name:"مصر",flag:"🇪🇬"},
-  {id:"esp",name:"إسبانيا",flag:"🇪🇸"},{id:"cpv",name:"كاب فيردي",flag:"🇨🇻"},
-  {id:"fra",name:"فرنسا",flag:"🇫🇷"},{id:"nor",name:"النرويج",flag:"🇳🇴"},{id:"sen",name:"السنغال",flag:"🇸🇳"},
-  {id:"arg",name:"الأرجنتين",flag:"🇦🇷"},{id:"aut",name:"النمسا",flag:"🇦🇹"},{id:"alg",name:"الجزائر",flag:"🇩🇿"},
-  {id:"col",name:"كولومبيا",flag:"🇨🇴"},{id:"por",name:"البرتغال",flag:"🇵🇹"},{id:"cod",name:"الكونغو الديمقراطية",flag:"🇨🇩"},
-  {id:"eng",name:"إنجلترا",flag:"🏴"},{id:"cro",name:"كرواتيا",flag:"🇭🇷"},{id:"gha",name:"غانا",flag:"🇬🇭"}
+  {id:"rsa",name:"جنوب أفريقيا",flag:"🇿🇦"},{id:"can",name:"كندا",flag:"🇨🇦"},
+  {id:"bra",name:"البرازيل",flag:"🇧🇷"},{id:"jpn",name:"اليابان",flag:"🇯🇵"},
+  {id:"ger",name:"ألمانيا",flag:"🇩🇪"},{id:"par",name:"باراغواي",flag:"🇵🇾"},
+  {id:"ned",name:"هولندا",flag:"🇳🇱"},{id:"mar",name:"المغرب",flag:"🇲🇦"},
+  {id:"civ",name:"كوت ديفوار",flag:"🇨🇮"},{id:"nor",name:"النرويج",flag:"🇳🇴"},
+  {id:"fra",name:"فرنسا",flag:"🇫🇷"},{id:"swe",name:"السويد",flag:"🇸🇪"},
+  {id:"mex",name:"المكسيك",flag:"🇲🇽"},{id:"ecu",name:"إكوادور",flag:"🇪🇨"},
+  {id:"eng",name:"إنجلترا",flag:"🏴"},{id:"cod",name:"الكونغو الديمقراطية",flag:"🇨🇩"},
+  {id:"bel",name:"بلجيكا",flag:"🇧🇪"},{id:"sen",name:"السنغال",flag:"🇸🇳"},
+  {id:"usa",name:"الولايات المتحدة",flag:"🇺🇸"},{id:"bih",name:"البوسنة والهرسك",flag:"🇧🇦"},
+  {id:"esp",name:"إسبانيا",flag:"🇪🇸"},{id:"aut",name:"النمسا",flag:"🇦🇹"},
+  {id:"por",name:"البرتغال",flag:"🇵🇹"},{id:"cro",name:"كرواتيا",flag:"🇭🇷"},
+  {id:"sui",name:"سويسرا",flag:"🇨🇭"},{id:"alg",name:"الجزائر",flag:"🇩🇿"},
+  {id:"col",name:"كولومبيا",flag:"🇨🇴"},{id:"gha",name:"غانا",flag:"🇬🇭"},
+  {id:"aus",name:"أستراليا",flag:"🇦🇺"},{id:"egy",name:"مصر",flag:"🇪🇬"},
+  {id:"arg",name:"الأرجنتين",flag:"🇦🇷"},{id:"cpv",name:"الرأس الأخضر",flag:"🇨🇻"}
 ];
 const TEAM_MAP = Object.fromEntries(TEAMS.map(t=>[t.id,t]));
 
-const STAGES = [
-  {key:"r16", label:"دور الـ16", from:32, pick:16},
-  {key:"qf",  label:"ربع النهائي", from:16, pick:8},
-  {key:"sf",  label:"نصف النهائي", from:8, pick:4},
-  {key:"fin", label:"النهائي", from:4, pick:2},
-  {key:"champ", label:"البطل", from:2, pick:1}
+/* ============ REAL BRACKET (official Round-of-32 draw → Final) ============ */
+const MATCHES = {
+  m1:{round:"r32", teams:["rsa","can"]}, m2:{round:"r32", teams:["bra","jpn"]},
+  m3:{round:"r32", teams:["ger","par"]}, m4:{round:"r32", teams:["ned","mar"]},
+  m5:{round:"r32", teams:["civ","nor"]}, m6:{round:"r32", teams:["fra","swe"]},
+  m7:{round:"r32", teams:["mex","ecu"]}, m8:{round:"r32", teams:["eng","cod"]},
+  m9:{round:"r32", teams:["bel","sen"]}, m10:{round:"r32", teams:["usa","bih"]},
+  m11:{round:"r32", teams:["esp","aut"]}, m12:{round:"r32", teams:["por","cro"]},
+  m13:{round:"r32", teams:["sui","alg"]}, m14:{round:"r32", teams:["col","gha"]},
+  m15:{round:"r32", teams:["aus","egy"]}, m16:{round:"r32", teams:["arg","cpv"]},
+
+  m17:{round:"r16", from:["m1","m4"]}, m18:{round:"r16", from:["m2","m5"]},
+  m19:{round:"r16", from:["m3","m6"]}, m20:{round:"r16", from:["m7","m8"]},
+  m21:{round:"r16", from:["m9","m10"]}, m22:{round:"r16", from:["m11","m12"]},
+  m23:{round:"r16", from:["m13","m14"]}, m24:{round:"r16", from:["m15","m16"]},
+
+  m25:{round:"qf", from:["m17","m18"]}, m26:{round:"qf", from:["m19","m20"]},
+  m27:{round:"qf", from:["m21","m22"]}, m28:{round:"qf", from:["m23","m24"]},
+
+  m29:{round:"sf", from:["m25","m26"]}, m30:{round:"sf", from:["m27","m28"]},
+
+  m31:{round:"final", from:["m29","m30"]}
+};
+const ROUNDS = [
+  {key:"r32", label:"دور الـ32", matches:["m1","m2","m3","m4","m5","m6","m7","m8","m9","m10","m11","m12","m13","m14","m15","m16"]},
+  {key:"r16", label:"دور الـ16", matches:["m17","m18","m19","m20","m21","m22","m23","m24"]},
+  {key:"qf", label:"ربع النهائي", matches:["m25","m26","m27","m28"]},
+  {key:"sf", label:"نصف النهائي", matches:["m29","m30"]},
+  {key:"final", label:"النهائي", matches:["m31"]}
 ];
-const ADMIN_PIN = "2026";
+const MATCH_IDS = Object.keys(MATCHES);
+const MAX_POINTS = MATCH_IDS.length; // 31
+
+function getMatchTeams(matchId, picks){
+  const m = MATCHES[matchId];
+  if(m.teams) return m.teams;
+  return [picks[m.from[0]]||null, picks[m.from[1]]||null];
+}
+
+function recomputeValidity(picks){
+  // walk rounds in order, drop picks that no longer match available teams
+  ROUNDS.forEach(r=>{
+    r.matches.forEach(id=>{
+      const teams = getMatchTeams(id, picks);
+      if(picks[id] && !teams.includes(picks[id])){
+        delete picks[id];
+      }
+    });
+  });
+}
+
+/* ============ KEY SANITIZER ============ */
+function sanitizeKey(s){
+  return s.trim().replace(/[.#$\[\]\/]/g,"_").slice(0,40);
+}
 
 /* ============ STATE ============ */
 let state = {
   username: null,
-  screen: "login",   // login | home
-  tab: "predict",    // predict | global | groups
-  draft: null,       // working copy of predictions while editing
-  groupView: null,   // group id being viewed
-  adminMode: false
+  userKey: null,
+  screen: "login",
+  tab: "predict",
+  draft: null,
+  groupView: null,
+  connected: {results:false, predictions:false, users:false, groups:false}
 };
 
-/* ============ STORAGE HELPERS ============ */
-async function storeGet(key){
-  try{ const r = await window.storage.get(key, true); return r ? JSON.parse(r.value) : null; }
-  catch(e){ return null; }
+let MIRROR = { results:{}, predictions:{}, users:{}, groups:{} };
+
+/* ============ FIREBASE REST HELPERS ============ */
+async function fbGet(path){
+  try{
+    const res = await fetch(`${FIREBASE_URL}/${path}.json`);
+    if(!res.ok) return null;
+    return await res.json();
+  }catch(e){ console.error(e); return null; }
 }
-async function storeSet(key, val){
-  try{ await window.storage.set(key, JSON.stringify(val), true); return true; }
-  catch(e){ console.error(e); return false; }
+async function fbSet(path, value){
+  try{
+    const res = await fetch(`${FIREBASE_URL}/${path}.json`, {
+      method:"PUT", headers:{"Content-Type":"application/json"}, body: JSON.stringify(value)
+    });
+    return res.ok;
+  }catch(e){ console.error(e); return false; }
 }
 
-async function getUsers(){ return (await storeGet("wc-users")) || []; }
-async function ensureUser(name){
-  const users = await getUsers();
-  if(!users.includes(name)){
-    users.push(name);
-    await storeSet("wc-users", users);
+/* ============ REAL-TIME SYNC (Firebase SSE) ============ */
+function applySSE(store, payload){
+  const {path, data} = payload;
+  if(path === "/") return data || {};
+  const key = path.slice(1).split("/")[0];
+  const clone = {...store};
+  if(data === null) delete clone[key]; else clone[key] = data;
+  return clone;
+}
+
+function openStream(node){
+  return new Promise((resolve)=>{
+    let resolved = false;
+    const es = new EventSource(`${FIREBASE_URL}/${node}.json`);
+    es.addEventListener("put", (e)=>{
+      const payload = JSON.parse(e.data);
+      MIRROR[node] = applySSE(MIRROR[node], payload);
+      state.connected[node] = true;
+      if(!resolved){ resolved = true; resolve(); }
+      onRemoteUpdate(node);
+    });
+    es.addEventListener("patch", (e)=>{
+      const payload = JSON.parse(e.data);
+      const {path, data} = payload;
+      if(path === "/"){
+        MIRROR[node] = {...MIRROR[node], ...data};
+      } else {
+        const key = path.slice(1).split("/")[0];
+        MIRROR[node][key] = {...(MIRROR[node][key]||{}), ...data};
+      }
+      onRemoteUpdate(node);
+    });
+    es.onerror = ()=>{
+      state.connected[node] = false;
+      if(!resolved){ resolved = true; resolve(); } // don't block app forever if stream fails
+    };
+  });
+}
+
+function onRemoteUpdate(node){
+  // live-refresh leaderboard / groups tabs when data they depend on changes
+  if(state.screen !== "home") return;
+  if((node==="results"||node==="predictions") && (state.tab==="global" || (state.tab==="groups"))){
+    renderTabOnly();
   }
+  if(node==="users" && state.tab==="global"){ renderTabOnly(); }
+  if(node==="groups" && state.tab==="groups"){ renderTabOnly(); }
+  updateConnDot();
 }
-async function getPrediction(name){ return await storeGet("wc-pred-"+name); }
-async function savePrediction(name, pred){ return await storeSet("wc-pred-"+name, pred); }
-async function getResults(){ return (await storeGet("wc-results")) || {}; }
-async function saveResults(res){ return await storeSet("wc-results", res); }
-async function getGroups(){ return (await storeGet("wc-groups")) || []; }
-async function saveGroups(g){ return await storeSet("wc-groups", g); }
 
+async function initSync(){
+  await Promise.all([
+    openStream("results"), openStream("predictions"), openStream("users"), openStream("groups")
+  ]);
+  state.screen = "login";
+  render();
+}
+
+/* ============ SCORING ============ */
+function scorePrediction(pred, results){
+  if(!pred || !results) return 0;
+  let total = 0;
+  MATCH_IDS.forEach(id=>{ if(results[id] && pred[id] === results[id]) total++; });
+  return total;
+}
+
+/* ============ TOAST ============ */
 function showToast(msg){
   const t = document.getElementById("toast");
   t.textContent = msg;
   t.classList.add("show");
   setTimeout(()=>t.classList.remove("show"), 2200);
 }
-
 function genCode(){
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   let c = "";
   for(let i=0;i<5;i++) c += chars[Math.floor(Math.random()*chars.length)];
   return c;
 }
-
-/* ============ SCORING ============ */
-function scorePrediction(pred, results){
-  if(!pred || !results) return {total:0, breakdown:{}};
-  let total = 0;
-  const breakdown = {};
-  STAGES.forEach(s=>{
-    const userArr = pred[s.key] || [];
-    const realArr = results[s.key] || [];
-    const correct = userArr.filter(id => realArr.includes(id)).length;
-    breakdown[s.key] = correct;
-    total += correct;
-  });
-  return {total, breakdown};
+function escapeHtml(s){
+  return (s||"").replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 }
 
 /* ============ RENDER ROOT ============ */
+function updateConnDot(){
+  const el = document.getElementById("connDot");
+  if(!el) return;
+  const allLive = Object.values(state.connected).every(v=>v);
+  el.className = "dot" + (allLive ? " live" : "");
+}
+
 async function render(){
   const app = document.getElementById("app");
   if(state.screen === "login"){
@@ -326,6 +352,7 @@ async function render(){
       <h1 class="title">المحنكين <span>ملوك التوقعات</span></h1>
       <div class="subtitle">من دور الـ32 وحتى رفع الكأس 🏆</div>
     </div>
+    <div class="conn"><span class="dot" id="connDot"></span> <span>متصل لحظيًا بقاعدة البيانات</span></div>
     <div class="userbar">
       <div>أهلاً، <b>${escapeHtml(state.username)}</b></div>
       <a onclick="logout()">تسجيل خروج</a>
@@ -337,15 +364,19 @@ async function render(){
     </div>
     <div id="tabContent"></div>
   `;
+  updateConnDot();
+  await renderTabOnly();
+}
+
+async function renderTabOnly(){
   const content = document.getElementById("tabContent");
+  if(!content) return;
   if(state.tab === "predict"){
-    content.innerHTML = await renderPredictTab();
-    wirePredictTab();
+    content.innerHTML = renderPredictTab();
   } else if(state.tab === "global"){
-    content.innerHTML = await renderGlobalTab();
+    content.innerHTML = renderGlobalTab();
   } else if(state.tab === "groups"){
-    content.innerHTML = await renderGroupsTab();
-    wireGroupsTab();
+    content.innerHTML = renderGroupsTab();
   }
 }
 
@@ -354,14 +385,14 @@ function renderLogin(){
     <div class="stadium-header">
       <span class="eyebrow">FIFA WORLD CUP 2026</span>
       <h1 class="title">المحنكين <span>ملوك التوقعات</span></h1>
-      <div class="subtitle">توقع المتأهلين دور بعد دور... ونافس أصدقاءك على القمة</div>
+      <div class="subtitle">توقع الفائز من كل مباراة دور بعد دور... ونافس أصحابك على القمة</div>
     </div>
     <div class="card" style="max-width:380px;margin:0 auto;">
       <h2><span class="num">⚽</span> ادخل اسمك للبدء</h2>
       <input type="text" id="loginName" placeholder="اسم المستخدم" maxlength="20" style="margin-bottom:12px;">
       <button class="btn-gold" style="width:100%" onclick="doLogin()">دخول</button>
       <p style="color:var(--muted);font-size:12px;margin-top:14px;line-height:1.7;">
-        مفيش باسورد، بس اختار اسم مميز يعرفك بيه أصحابك في الترتيب 👀
+        مفيش باسورد، بس اختار اسم مميز. لو دخلت بنفس الاسم تاني هتلاقي توقعاتك زي ما سايبها 👀
       </p>
     </div>
   `;
@@ -371,124 +402,81 @@ async function doLogin(){
   const val = document.getElementById("loginName").value.trim();
   if(!val){ showToast("اكتب اسم الأول 🙏"); return; }
   if(val.length < 2){ showToast("الاسم قصير أوي"); return; }
-  await ensureUser(val);
+  const key = sanitizeKey(val);
   state.username = val;
+  state.userKey = key;
+  if(!MIRROR.users[key]){
+    await fbSet("users/"+key, {name: val});
+  }
   state.screen = "home";
   state.tab = "predict";
   await render();
 }
 
 function logout(){
-  state.username = null;
-  state.screen = "login";
-  render();
+  state.username = null; state.userKey = null; state.draft = null;
+  state.screen = "login"; render();
 }
 
-function setTab(t){
-  state.tab = t;
-  state.groupView = null;
-  render();
-}
-
-function escapeHtml(s){
-  return (s||"").replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
-}
+function setTab(t){ state.tab = t; state.groupView = null; renderTabOnly(); }
 
 /* ============ PREDICT TAB ============ */
-async function renderPredictTab(){
-  const saved = await getPrediction(state.username);
+function renderPredictTab(){
   if(!state.draft){
-    state.draft = saved ? JSON.parse(JSON.stringify(saved)) : {r16:[],qf:[],sf:[],fin:[],champ:[]};
+    const saved = MIRROR.predictions[state.userKey];
+    state.draft = saved ? JSON.parse(JSON.stringify(saved)) : {};
   }
-  let html = `<div class="card"><div class="stage-progress">`;
-  STAGES.forEach((s,i)=>{
-    const filled = (state.draft[s.key]||[]).length === s.pick;
-    html += `<div class="stage-dot ${filled?'done':''}">${s.label}</div>`;
-  });
-  html += `</div>`;
-
-  STAGES.forEach((s,i)=>{
-    const pool = i===0 ? TEAMS.map(t=>t.id) : (state.draft[STAGES[i-1].key]||[]);
-    const selected = state.draft[s.key]||[];
-    const poolReady = pool.length === s.from;
-    html += `<div style="margin-bottom:22px;">
-      <h2 style="margin-bottom:4px;">${s.label}</h2>
-      <div class="counter">اختر <b>${s.pick}</b> من ${s.from} — تم اختيار <b>${selected.length}</b></div>
-      <div class="chip-grid">`;
-    if(poolReady){
-      pool.forEach(id=>{
-        const t = TEAM_MAP[id];
-        const isSel = selected.includes(id);
-        html += `<div class="chip ${isSel?'selected':''}" data-stage="${s.key}" data-id="${id}" onclick="toggleTeam('${s.key}','${id}',${s.pick})">
-          <span class="flag">${t.flag}</span><span>${t.name}</span>
+  let html = `<div class="card">`;
+  ROUNDS.forEach(r=>{
+    html += `<div class="round-block"><div class="round-title">${r.label}<span class="line"></span></div>`;
+    r.matches.forEach(id=>{
+      const teams = getMatchTeams(id, state.draft);
+      if(teams[0] && teams[1]){
+        const tA = TEAM_MAP[teams[0]], tB = TEAM_MAP[teams[1]];
+        const picked = state.draft[id];
+        html += `<div class="match-row">
+          <div class="team-pick ${picked===teams[0]?'selected':''}" onclick="pickWinner('${id}','${teams[0]}')"><span class="flag">${tA.flag}</span><span>${tA.name}</span></div>
+          <div class="vs">VS</div>
+          <div class="team-pick ${picked===teams[1]?'selected':''}" onclick="pickWinner('${id}','${teams[1]}')"><span class="flag">${tB.flag}</span><span>${tB.name}</span></div>
         </div>`;
-      });
-    } else {
-      html += `<div class="empty" style="grid-column:1/-1;">كمّل الدور اللي قبله الأول ⬆️</div>`;
-    }
-    html += `</div></div>`;
+      } else {
+        html += `<div class="match-row tbd"><div class="tbd-label">في انتظار نتيجة الدور السابق ⏳</div></div>`;
+      }
+    });
+    html += `</div>`;
   });
-
   html += `<div class="btn-row"><button class="btn-gold" onclick="savePredictionDraft()">حفظ توقعاتي</button>
   <button class="btn-ghost" onclick="resetDraft()">إعادة تعيين</button></div></div>`;
   return html;
 }
 
-function wirePredictTab(){}
-
-function toggleTeam(stageKey, id, maxPick){
-  const arr = state.draft[stageKey] || (state.draft[stageKey]=[]);
-  const idx = arr.indexOf(id);
-  if(idx >= 0){
-    arr.splice(idx,1);
-    clearDownstream(stageKey);
-  } else {
-    if(arr.length >= maxPick){ showToast(`تقدر تختار ${maxPick} بس في الدور ده`); return; }
-    arr.push(id);
-    if(arr.length === maxPick) clearDownstream(stageKey);
-  }
-  render();
-}
-
-function clearDownstream(stageKey){
-  const idx = STAGES.findIndex(s=>s.key===stageKey);
-  for(let j=idx+1;j<STAGES.length;j++){
-    const k = STAGES[j].key;
-    const pool = state.draft[STAGES[j-1].key]||[];
-    state.draft[k] = (state.draft[k]||[]).filter(id=>pool.includes(id));
-  }
+function pickWinner(matchId, teamId){
+  state.draft[matchId] = teamId;
+  recomputeValidity(state.draft);
+  renderTabOnly();
 }
 
 async function savePredictionDraft(){
-  const last = STAGES[STAGES.length-1];
-  await savePrediction(state.username, state.draft);
+  await fbSet("predictions/"+state.userKey, state.draft);
+  MIRROR.predictions[state.userKey] = JSON.parse(JSON.stringify(state.draft));
   showToast("اتحفظت توقعاتك ✅");
-  render();
+  renderTabOnly();
 }
-
-function resetDraft(){
-  state.draft = {r16:[],qf:[],sf:[],fin:[],champ:[]};
-  render();
-}
+function resetDraft(){ state.draft = {}; renderTabOnly(); }
 
 /* ============ GLOBAL TAB ============ */
-async function renderGlobalTab(){
-  const users = await getUsers();
-  const results = await getResults();
-  const hasResults = STAGES.some(s => (results[s.key]||[]).length);
-  const rows = [];
-  for(const u of users){
-    const pred = await getPrediction(u);
-    const sc = scorePrediction(pred, results);
-    rows.push({user:u, total:sc.total});
-  }
+function renderGlobalTab(){
+  const results = MIRROR.results || {};
+  const hasResults = MATCH_IDS.some(id=>results[id]);
+  const users = Object.entries(MIRROR.users||{});
+  const rows = users.map(([key,u])=>({
+    user: u.name || key,
+    total: scorePrediction(MIRROR.predictions[key], results)
+  }));
   rows.sort((a,b)=>b.total-a.total);
 
-  let html = `<div class="card">
-    <h2><span class="num">🏆</span> الترتيب العام — كل المسجلين</h2>`;
-  if(!hasResults){
-    html += `<div class="empty">لسه مفيش نتائج فعلية اتسجلت. الترتيب هيظهر أول ما الأدوار تبدأ تتحسم.</div>`;
-  }
+  let html = `<div class="card"><h2><span class="num">🏆</span> الترتيب العام — كل المسجلين</h2>`;
+  if(!hasResults) html += `<div class="empty">لسه مفيش نتائج فعلية اتسجلت. الترتيب هيظهر أول ما الأدوار تتحسم.</div>`;
   if(rows.length === 0){
     html += `<div class="empty">محدش سجل توقعات لسه</div>`;
   } else {
@@ -498,7 +486,7 @@ async function renderGlobalTab(){
       html += `<tr class="${r.user===state.username?'me':''}">
         <td class="rank ${rankClass}">${i+1}</td>
         <td>${escapeHtml(r.user)}${r.user===state.username?' (انت)':''}</td>
-        <td>${r.total} / 31</td>
+        <td>${r.total} / ${MAX_POINTS}</td>
       </tr>`;
     });
     html += `</tbody></table>`;
@@ -508,33 +496,27 @@ async function renderGlobalTab(){
 }
 
 /* ============ GROUPS TAB ============ */
-async function renderGroupsTab(){
-  const groups = await getGroups();
-  const myGroups = groups.filter(g => g.members.includes(state.username));
+function renderGroupsTab(){
+  const groups = Object.values(MIRROR.groups||{});
+  const myGroups = groups.filter(g => (g.members||[]).includes(state.userKey));
 
   if(state.groupView){
-    const g = groups.find(x=>x.id===state.groupView);
-    if(!g) { state.groupView=null; return renderGroupsTab(); }
-    const results = await getResults();
-    const rows = [];
-    for(const u of g.members){
-      const pred = await getPrediction(u);
-      const sc = scorePrediction(pred, results);
-      rows.push({user:u, total:sc.total});
-    }
+    const g = (MIRROR.groups||{})[state.groupView];
+    if(!g){ state.groupView=null; return renderGroupsTab(); }
+    const results = MIRROR.results || {};
+    const rows = (g.members||[]).map(key=>({
+      user: (MIRROR.users[key]||{}).name || key,
+      total: scorePrediction(MIRROR.predictions[key], results)
+    }));
     rows.sort((a,b)=>b.total-a.total);
     let html = `<div class="card">
       <a onclick="backToGroups()" style="color:var(--gold);cursor:pointer;font-size:13px;">← رجوع للمجموعات</a>
       <h2 style="margin-top:10px;"><span class="num">👥</span> ${escapeHtml(g.name)}</h2>
-      <div class="counter">كود الدعوة: <span class="code-badge">${g.code}</span> &nbsp; (${g.members.length} أعضاء)</div>
+      <div class="counter">كود الدعوة: <span class="code-badge">${g.code}</span> &nbsp; (${(g.members||[]).length} أعضاء)</div>
       <table><thead><tr><th>#</th><th>الاسم</th><th>النقاط</th></tr></thead><tbody>`;
     rows.forEach((r,i)=>{
       const rankClass = i===0?'g1':i===1?'g2':i===2?'g3':'';
-      html += `<tr class="${r.user===state.username?'me':''}">
-        <td class="rank ${rankClass}">${i+1}</td>
-        <td>${escapeHtml(r.user)}</td>
-        <td>${r.total} / 31</td>
-      </tr>`;
+      html += `<tr class="${r.user===state.username?'me':''}"><td class="rank ${rankClass}">${i+1}</td><td>${escapeHtml(r.user)}</td><td>${r.total} / ${MAX_POINTS}</td></tr>`;
     });
     html += `</tbody></table></div>`;
     return html;
@@ -556,11 +538,8 @@ async function renderGroupsTab(){
     html += `<div class="empty">لسه مش منضم لأي مجموعة. اعمل واحدة أو انضم بكود!</div>`;
   } else {
     myGroups.forEach(g=>{
-      html += `<div class="group-card" onclick="viewGroup('${g.id}')" style="cursor:pointer;">
-        <div>
-          <div style="font-weight:700;">${escapeHtml(g.name)}</div>
-          <div class="meta">${g.members.length} أعضاء</div>
-        </div>
+      html += `<div class="group-card" onclick="viewGroup('${g.id}')">
+        <div><div style="font-weight:700;">${escapeHtml(g.name)}</div><div class="meta">${(g.members||[]).length} أعضاء</div></div>
         <span class="code-badge">${g.code}</span>
       </div>`;
     });
@@ -569,134 +548,92 @@ async function renderGroupsTab(){
   return html;
 }
 
-function wireGroupsTab(){}
-
 async function createGroup(){
   const name = document.getElementById("newGroupName").value.trim();
   if(!name){ showToast("اكتب اسم المجموعة"); return; }
-  const groups = await getGroups();
-  const g = {id:"g"+Date.now(), name, code:genCode(), owner:state.username, members:[state.username]};
-  groups.push(g);
-  await saveGroups(groups);
+  const id = "g"+Date.now();
+  const g = {id, name, code:genCode(), owner:state.userKey, members:[state.userKey]};
+  await fbSet("groups/"+id, g);
+  MIRROR.groups[id] = g;
   showToast("اتعملت المجموعة 🎉");
-  render();
+  renderTabOnly();
 }
 
 async function joinGroup(){
   const code = document.getElementById("joinCode").value.trim().toUpperCase();
   if(!code){ showToast("اكتب الكود"); return; }
-  const groups = await getGroups();
-  const g = groups.find(x=>x.code===code);
-  if(!g){ showToast("الكود مش موجود"); return; }
-  if(!g.members.includes(state.username)){
-    g.members.push(state.username);
-    await saveGroups(groups);
+  const entry = Object.entries(MIRROR.groups||{}).find(([id,g])=>g.code===code);
+  if(!entry){ showToast("الكود مش موجود"); return; }
+  const [id, g] = entry;
+  if(!(g.members||[]).includes(state.userKey)){
+    g.members = [...(g.members||[]), state.userKey];
+    await fbSet("groups/"+id, g);
+    MIRROR.groups[id] = g;
   }
   showToast(`انضميت لـ ${g.name} ✅`);
-  render();
+  renderTabOnly();
 }
 
-function viewGroup(id){
-  state.groupView = id;
-  render();
-}
-function backToGroups(){
-  state.groupView = null;
-  render();
-}
+function viewGroup(id){ state.groupView = id; renderTabOnly(); }
+function backToGroups(){ state.groupView = null; renderTabOnly(); }
 
 /* ============ ADMIN ============ */
-function openAdminModal(){
-  document.getElementById("adminModal").classList.add("show");
-}
-function closeAdminModal(){
-  document.getElementById("adminModal").classList.remove("show");
-  document.getElementById("adminPinInput").value = "";
-}
+function openAdminModal(){ document.getElementById("adminModal").classList.add("show"); }
+function closeAdminModal(){ document.getElementById("adminModal").classList.remove("show"); document.getElementById("adminPinInput").value=""; }
 async function checkAdminPin(){
   const val = document.getElementById("adminPinInput").value;
-  if(val === ADMIN_PIN){
-    closeAdminModal();
-    state.adminMode = true;
-    await renderAdmin();
-  } else {
-    showToast("الرمز غلط");
-  }
+  if(val === ADMIN_PIN){ closeAdminModal(); renderAdmin(); }
+  else { showToast("الرمز غلط"); }
 }
 
-async function renderAdmin(){
-  const app = document.getElementById("app");
-  const results = await getResults();
+function renderAdmin(){
   if(!state._adminDraft){
-    state._adminDraft = JSON.parse(JSON.stringify(results.r16 || results.qf || results.sf || results.fin || results.champ ? results : {r16:[],qf:[],sf:[],fin:[],champ:[]}));
-    STAGES.forEach(s=>{ if(!state._adminDraft[s.key]) state._adminDraft[s.key] = []; });
+    state._adminDraft = JSON.parse(JSON.stringify(MIRROR.results || {}));
   }
+  const app = document.getElementById("app");
   let html = `<div class="stadium-header">
     <span class="eyebrow">ADMIN PANEL</span>
     <h1 class="title">تحديث <span>النتائج الفعلية</span></h1>
-    <div class="subtitle">اللي تحفظه هنا هو اللي هيتحسب بيه ترتيب الجميع</div>
+    <div class="subtitle">بمجرد الحفظ، الترتيب يتحدث فورًا عند الجميع</div>
   </div>
   <div class="userbar"><div></div><a onclick="exitAdmin()">رجوع للموقع</a></div>
   <div class="card">`;
-
-  STAGES.forEach((s,i)=>{
-    const pool = i===0 ? TEAMS.map(t=>t.id) : (state._adminDraft[STAGES[i-1].key]||[]);
-    const selected = state._adminDraft[s.key]||[];
-    const poolReady = pool.length === s.from;
-    html += `<div style="margin-bottom:22px;">
-      <h2 style="margin-bottom:4px;">${s.label} (الفعلي)</h2>
-      <div class="counter">حدد <b>${s.pick}</b> من ${s.from} — محدد <b>${selected.length}</b></div>
-      <div class="chip-grid">`;
-    if(poolReady){
-      pool.forEach(id=>{
-        const t = TEAM_MAP[id];
-        const isSel = selected.includes(id);
-        html += `<div class="chip ${isSel?'selected':''}" onclick="toggleAdminTeam('${s.key}','${id}',${s.pick})">
-          <span class="flag">${t.flag}</span><span>${t.name}</span>
+  ROUNDS.forEach(r=>{
+    html += `<div class="round-block"><div class="round-title">${r.label} (الفعلي)<span class="line"></span></div>`;
+    r.matches.forEach(id=>{
+      const teams = getMatchTeams(id, state._adminDraft);
+      if(teams[0] && teams[1]){
+        const tA = TEAM_MAP[teams[0]], tB = TEAM_MAP[teams[1]];
+        const picked = state._adminDraft[id];
+        html += `<div class="match-row">
+          <div class="team-pick ${picked===teams[0]?'selected':''}" onclick="adminPick('${id}','${teams[0]}')"><span class="flag">${tA.flag}</span><span>${tA.name}</span></div>
+          <div class="vs">VS</div>
+          <div class="team-pick ${picked===teams[1]?'selected':''}" onclick="adminPick('${id}','${teams[1]}')"><span class="flag">${tB.flag}</span><span>${tB.name}</span></div>
         </div>`;
-      });
-    } else {
-      html += `<div class="empty" style="grid-column:1/-1;">كمّل الدور اللي قبله الأول ⬆️</div>`;
-    }
-    html += `</div></div>`;
+      } else {
+        html += `<div class="match-row tbd"><div class="tbd-label">في انتظار نتيجة الدور السابق ⏳</div></div>`;
+      }
+    });
+    html += `</div>`;
   });
-
   html += `<div class="btn-row"><button class="btn-gold" onclick="saveAdminResults()">حفظ النتائج الفعلية</button></div></div>`;
   app.innerHTML = html;
 }
 
-function toggleAdminTeam(stageKey, id, maxPick){
-  const arr = state._adminDraft[stageKey] || (state._adminDraft[stageKey]=[]);
-  const idx = arr.indexOf(id);
-  if(idx>=0){
-    arr.splice(idx,1);
-    clearAdminDownstream(stageKey);
-  } else {
-    if(arr.length >= maxPick){ showToast(`الدور ده ${maxPick} بس`); return; }
-    arr.push(id);
-    if(arr.length === maxPick) clearAdminDownstream(stageKey);
-  }
+function adminPick(matchId, teamId){
+  state._adminDraft[matchId] = teamId;
+  recomputeValidity(state._adminDraft);
   renderAdmin();
 }
-function clearAdminDownstream(stageKey){
-  const idx = STAGES.findIndex(s=>s.key===stageKey);
-  for(let j=idx+1;j<STAGES.length;j++){
-    const k = STAGES[j].key;
-    const pool = state._adminDraft[STAGES[j-1].key]||[];
-    state._adminDraft[k] = (state._adminDraft[k]||[]).filter(id=>pool.includes(id));
-  }
-}
 async function saveAdminResults(){
-  await saveResults(state._adminDraft);
-  showToast("اتحفظت النتائج الفعلية ✅");
+  await fbSet("results", state._adminDraft);
+  MIRROR.results = JSON.parse(JSON.stringify(state._adminDraft));
+  showToast("اتحفظت النتائج الفعلية ✅ — هتتحدث عند الجميع فورًا");
 }
-function exitAdmin(){
-  state.adminMode = false;
-  render();
-}
+function exitAdmin(){ render(); }
 
 /* ============ INIT ============ */
-render();
+initSync();
 </script>
 </body>
 </html>
