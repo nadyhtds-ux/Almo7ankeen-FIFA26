@@ -662,13 +662,12 @@ function renderUserPredictionsTable(targetKey){
   const results=MIRROR.core.results||{};
   const rs=MIRROR.core.roundState||{currentIndex:0};
   const preds=MIRROR.predictions[targetKey]||{};
-  const subs=(MIRROR.submissions||{})[targetKey]||{};
   let html=`<div class="card"><h2 style="font-size:15px;"><span class="num">📋</span> جدول التوقعات الكامل</h2>`;
   let any=false;
   ROUNDS.forEach((r,i)=>{
     if(i>rs.currentIndex) return;
-    const submitted=subs[r.key];
-    if(!submitted) return;
+    const hasAnyPick = r.matches.some(id=>preds[id]);
+    if(!hasAnyPick) return;
     any=true;
     const resultKnown = i<rs.currentIndex;
     html += `<div class="round-title" style="font-size:14px;margin-top:10px;">${r.label}${resultKnown?'':' (جاري)'}<span class="line"></span></div>`;
