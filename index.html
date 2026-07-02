@@ -6,17 +6,12 @@
 <title>المحنكين | ملوك التوقعات</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
   :root{
-    --pitch-night:#0E2A1F;
-    --turf-card:#1B4530;
-    --pitch-line:#EDEAE0;
-    --gold:#F4B731;
-    --gold-dim:#9C7A22;
-    --away-red:#D6584A;
-    --ink:#08140F;
-    --muted:#9FB8AA;
-    --green-ok:#3FCF7A;
+    --pitch-night:#0E2A1F; --turf-card:#1B4530; --pitch-line:#EDEAE0;
+    --gold:#F4B731; --gold-dim:#9C7A22; --away-red:#D6584A; --ink:#08140F;
+    --muted:#9FB8AA; --green-ok:#3FCF7A;
   }
   *{box-sizing:border-box;}
   body{margin:0;background:radial-gradient(ellipse at 50% -10%, #1d4a32 0%, var(--pitch-night) 55%), var(--pitch-night);color:var(--pitch-line);font-family:'Tajawal',sans-serif;min-height:100vh;}
@@ -34,7 +29,7 @@
   .card h2{font-family:'Cairo',sans-serif;font-size:18px;margin:0 0 14px;color:var(--pitch-line);}
   .card h2 .num{color:var(--gold);}
 
-  input[type=text], input[type=password]{width:100%;background:var(--pitch-night);border:1px solid rgba(237,234,224,0.15);color:var(--pitch-line);padding:13px 14px;border-radius:10px;font-family:'Tajawal',sans-serif;font-size:15px;}
+  input[type=text], input[type=password], input[type=datetime-local]{width:100%;background:var(--pitch-night);border:1px solid rgba(237,234,224,0.15);color:var(--pitch-line);padding:13px 14px;border-radius:10px;font-family:'Tajawal',sans-serif;font-size:15px;}
   input::placeholder{color:#6e8678;}
   input:focus{outline:2px solid var(--gold);outline-offset:1px;}
 
@@ -50,7 +45,7 @@
   .btn-sm{padding:7px 12px;font-size:12px;border-radius:8px;}
 
   .tabs{display:flex;gap:8px;margin-bottom:18px;overflow-x:auto;padding-bottom:2px;}
-  .tab{flex:0 0 auto;padding:10px 18px;border-radius:999px;background:transparent;border:1px solid rgba(237,234,224,0.15);color:var(--muted);font-family:'Cairo',sans-serif;font-weight:700;font-size:14px;white-space:nowrap;}
+  .tab{flex:0 0 auto;padding:10px 16px;border-radius:999px;background:transparent;border:1px solid rgba(237,234,224,0.15);color:var(--muted);font-family:'Cairo',sans-serif;font-weight:700;font-size:13px;white-space:nowrap;}
   .tab.active{background:var(--gold);color:var(--ink);border-color:var(--gold);}
 
   .userbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;color:var(--muted);font-size:14px;}
@@ -64,29 +59,38 @@
   .round-title{font-family:'Cairo',sans-serif;font-weight:800;font-size:16px;color:var(--gold);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
   .round-title .line{flex:1;height:1px;background:rgba(244,183,49,0.25);}
 
+  .countdown-box{background:var(--pitch-night);border:1px solid var(--gold-dim);border-radius:10px;padding:12px 14px;margin-bottom:14px;font-family:'Cairo',sans-serif;font-weight:800;color:var(--gold);text-align:center;font-size:14px;}
+
+  @keyframes popSelect{0%{transform:scale(0.9);}60%{transform:scale(1.04);}100%{transform:scale(1);}}
   .match-row{display:flex;align-items:center;gap:10px;background:var(--pitch-night);border:1px solid rgba(237,234,224,0.08);border-radius:12px;padding:10px;margin-bottom:8px;}
   .match-row.tbd{opacity:0.45;}
-  .team-pick{flex:1;display:flex;align-items:center;gap:8px;padding:10px 10px;border-radius:9px;cursor:pointer;border:1.5px solid transparent;font-size:14px;transition:all .12s ease;}
+  .team-pick{flex:1;display:flex;align-items:center;gap:8px;padding:10px 10px;border-radius:9px;cursor:pointer;border:1.5px solid transparent;font-size:13px;transition:all .12s ease;}
   .team-pick:hover{background:rgba(244,183,49,0.06);}
-  .team-pick.selected{border-color:var(--gold);background:rgba(244,183,49,0.14);color:var(--gold);font-weight:700;}
-  .team-pick .flag{font-size:18px;}
+  .team-pick.selected{border-color:var(--gold);background:rgba(244,183,49,0.14);color:var(--gold);font-weight:700;animation:popSelect .3s ease;}
   .team-pick.correct{border-color:var(--green-ok);background:rgba(63,207,122,0.14);color:var(--green-ok);font-weight:700;}
   .team-pick.wrong{border-color:var(--away-red);opacity:0.55;}
+  .flag-img{width:22px;height:16px;object-fit:cover;border-radius:2px;box-shadow:0 0 0 1px rgba(255,255,255,0.15);flex-shrink:0;}
   .vs{font-family:'Cairo',sans-serif;font-size:11px;color:var(--muted);padding:0 4px;}
   .tbd-label{flex:1;text-align:center;font-size:13px;color:var(--muted);padding:10px;}
 
   .counter{font-size:13px;color:var(--muted);margin-bottom:12px;}
   .counter b{color:var(--gold);}
 
-  table{width:100%;border-collapse:collapse;font-size:14px;}
-  th{text-align:right;color:var(--muted);font-weight:600;font-size:12px;padding:8px 10px;border-bottom:1px solid rgba(237,234,224,0.1);}
-  td{padding:10px;border-bottom:1px solid rgba(237,234,224,0.06);}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th{text-align:right;color:var(--muted);font-weight:600;font-size:11px;padding:8px 6px;border-bottom:1px solid rgba(237,234,224,0.1);}
+  td{padding:9px 6px;border-bottom:1px solid rgba(237,234,224,0.06);}
   tr.me{background:rgba(244,183,49,0.08);}
-  .rank{font-family:'Cairo',sans-serif;font-weight:900;color:var(--gold);width:30px;}
+  .rank{font-family:'Cairo',sans-serif;font-weight:900;color:var(--gold);width:26px;}
   .rank.g1{color:#F4B731;}.rank.g2{color:#C9C9C9;}.rank.g3{color:#CD8B4D;}
   .crown{margin-left:4px;}
+  .acc-pill{font-size:11px;color:var(--muted);}
 
   .empty{text-align:center;color:var(--muted);padding:30px 10px;font-size:14px;}
+
+  .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  .stat-box{text-align:center;background:var(--pitch-night);border-radius:10px;padding:14px 6px;}
+  .stat-num{font-family:'Cairo',sans-serif;font-weight:900;font-size:22px;color:var(--gold);}
+  .stat-lbl{font-size:11px;color:var(--muted);margin-top:4px;}
 
   .group-card{display:flex;justify-content:space-between;align-items:center;background:var(--pitch-night);border-radius:10px;padding:14px 16px;margin-bottom:10px;border:1px solid rgba(237,234,224,0.08);cursor:pointer;}
   .group-card .meta{font-size:12px;color:var(--muted);margin-top:4px;}
@@ -94,6 +98,17 @@
 
   .history-row{display:flex;justify-content:space-between;align-items:center;padding:10px 4px;border-bottom:1px solid rgba(237,234,224,0.06);}
   .history-row:last-child{border-bottom:none;}
+
+  .badge-pill{display:inline-block;background:rgba(244,183,49,0.12);color:var(--gold);border:1px solid var(--gold-dim);border-radius:999px;padding:6px 12px;font-size:12px;margin:4px 4px 0 0;}
+
+  .chat-box{max-height:220px;overflow-y:auto;background:var(--pitch-night);border-radius:10px;padding:10px;margin-bottom:4px;}
+  .chat-msg{font-size:13px;padding:6px 4px;border-bottom:1px solid rgba(237,234,224,0.05);}
+  .chat-msg.mine{color:var(--gold);}
+
+  .schedule-row{display:flex;justify-content:space-between;align-items:center;padding:12px 4px;border-bottom:1px solid rgba(237,234,224,0.06);font-size:13px;}
+  .schedule-row .lbl{font-weight:800;font-family:'Cairo',sans-serif;color:var(--pitch-line);}
+  .schedule-row .dt{color:var(--muted);}
+  .schedule-row.current{background:rgba(244,183,49,0.08);border-radius:8px;padding-left:8px;padding-right:8px;}
 
   .toast{position:fixed;bottom:56px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--ink);padding:12px 22px;border-radius:999px;font-family:'Cairo',sans-serif;font-weight:700;font-size:14px;box-shadow:0 10px 30px rgba(0,0,0,0.4);opacity:0;pointer-events:none;transition:opacity .25s ease, transform .25s ease;z-index:100;}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(-6px);}
@@ -115,14 +130,9 @@
 </head>
 <body>
 
-<div class="wrap" id="app">
-  <div class="empty" style="padding-top:60px;">⏳ بنتصل بقاعدة البيانات...</div>
-</div>
+<div class="wrap" id="app"><div class="empty" style="padding-top:60px;">⏳ بنتصل بقاعدة البيانات...</div></div>
 <div class="toast" id="toast"></div>
-
-<div class="ticker-wrap" id="tickerWrap">
-  <div class="ticker-track" id="tickerTrack"></div>
-</div>
+<div class="ticker-wrap" id="tickerWrap"><div class="ticker-track" id="tickerTrack"></div></div>
 
 <div class="modal-bg" id="adminModal">
   <div class="modal">
@@ -135,11 +145,7 @@
     </div>
   </div>
 </div>
-
-<div class="modal-bg" id="celebrateModal">
-  <div class="modal celebrate-modal" id="celebrateContent"></div>
-</div>
-
+<div class="modal-bg" id="celebrateModal"><div class="modal celebrate-modal" id="celebrateContent"></div></div>
 <a href="#" class="admin-link" onclick="openAdminModal();return false;">⚙</a>
 
 <script>
@@ -147,26 +153,30 @@
 const FIREBASE_URL = "https://elmo7naken-d8901-default-rtdb.firebaseio.com";
 const ADMIN_PIN = "2026";
 
-/* ============ TEAM DATA ============ */
+/* ============ TEAM DATA (id, name, flag emoji fallback, ISO code for flag image) ============ */
 const TEAMS = [
-  {id:"rsa",name:"جنوب أفريقيا",flag:"🇿🇦"},{id:"can",name:"كندا",flag:"🇨🇦"},
-  {id:"bra",name:"البرازيل",flag:"🇧🇷"},{id:"jpn",name:"اليابان",flag:"🇯🇵"},
-  {id:"ger",name:"ألمانيا",flag:"🇩🇪"},{id:"par",name:"باراغواي",flag:"🇵🇾"},
-  {id:"ned",name:"هولندا",flag:"🇳🇱"},{id:"mar",name:"المغرب",flag:"🇲🇦"},
-  {id:"civ",name:"كوت ديفوار",flag:"🇨🇮"},{id:"nor",name:"النرويج",flag:"🇳🇴"},
-  {id:"fra",name:"فرنسا",flag:"🇫🇷"},{id:"swe",name:"السويد",flag:"🇸🇪"},
-  {id:"mex",name:"المكسيك",flag:"🇲🇽"},{id:"ecu",name:"إكوادور",flag:"🇪🇨"},
-  {id:"eng",name:"إنجلترا",flag:"🏴"},{id:"cod",name:"الكونغو الديمقراطية",flag:"🇨🇩"},
-  {id:"bel",name:"بلجيكا",flag:"🇧🇪"},{id:"sen",name:"السنغال",flag:"🇸🇳"},
-  {id:"usa",name:"الولايات المتحدة",flag:"🇺🇸"},{id:"bih",name:"البوسنة والهرسك",flag:"🇧🇦"},
-  {id:"esp",name:"إسبانيا",flag:"🇪🇸"},{id:"aut",name:"النمسا",flag:"🇦🇹"},
-  {id:"por",name:"البرتغال",flag:"🇵🇹"},{id:"cro",name:"كرواتيا",flag:"🇭🇷"},
-  {id:"sui",name:"سويسرا",flag:"🇨🇭"},{id:"alg",name:"الجزائر",flag:"🇩🇿"},
-  {id:"col",name:"كولومبيا",flag:"🇨🇴"},{id:"gha",name:"غانا",flag:"🇬🇭"},
-  {id:"aus",name:"أستراليا",flag:"🇦🇺"},{id:"egy",name:"مصر",flag:"🇪🇬"},
-  {id:"arg",name:"الأرجنتين",flag:"🇦🇷"},{id:"cpv",name:"الرأس الأخضر",flag:"🇨🇻"}
+  {id:"rsa",name:"جنوب أفريقيا",flag:"🇿🇦",iso:"za"},{id:"can",name:"كندا",flag:"🇨🇦",iso:"ca"},
+  {id:"bra",name:"البرازيل",flag:"🇧🇷",iso:"br"},{id:"jpn",name:"اليابان",flag:"🇯🇵",iso:"jp"},
+  {id:"ger",name:"ألمانيا",flag:"🇩🇪",iso:"de"},{id:"par",name:"باراغواي",flag:"🇵🇾",iso:"py"},
+  {id:"ned",name:"هولندا",flag:"🇳🇱",iso:"nl"},{id:"mar",name:"المغرب",flag:"🇲🇦",iso:"ma"},
+  {id:"civ",name:"كوت ديفوار",flag:"🇨🇮",iso:"ci"},{id:"nor",name:"النرويج",flag:"🇳🇴",iso:"no"},
+  {id:"fra",name:"فرنسا",flag:"🇫🇷",iso:"fr"},{id:"swe",name:"السويد",flag:"🇸🇪",iso:"se"},
+  {id:"mex",name:"المكسيك",flag:"🇲🇽",iso:"mx"},{id:"ecu",name:"إكوادور",flag:"🇪🇨",iso:"ec"},
+  {id:"eng",name:"إنجلترا",flag:"🏴",iso:"gb-eng"},{id:"cod",name:"الكونغو الديمقراطية",flag:"🇨🇩",iso:"cd"},
+  {id:"bel",name:"بلجيكا",flag:"🇧🇪",iso:"be"},{id:"sen",name:"السنغال",flag:"🇸🇳",iso:"sn"},
+  {id:"usa",name:"الولايات المتحدة",flag:"🇺🇸",iso:"us"},{id:"bih",name:"البوسنة والهرسك",flag:"🇧🇦",iso:"ba"},
+  {id:"esp",name:"إسبانيا",flag:"🇪🇸",iso:"es"},{id:"aut",name:"النمسا",flag:"🇦🇹",iso:"at"},
+  {id:"por",name:"البرتغال",flag:"🇵🇹",iso:"pt"},{id:"cro",name:"كرواتيا",flag:"🇭🇷",iso:"hr"},
+  {id:"sui",name:"سويسرا",flag:"🇨🇭",iso:"ch"},{id:"alg",name:"الجزائر",flag:"🇩🇿",iso:"dz"},
+  {id:"col",name:"كولومبيا",flag:"🇨🇴",iso:"co"},{id:"gha",name:"غانا",flag:"🇬🇭",iso:"gh"},
+  {id:"aus",name:"أستراليا",flag:"🇦🇺",iso:"au"},{id:"egy",name:"مصر",flag:"🇪🇬",iso:"eg"},
+  {id:"arg",name:"الأرجنتين",flag:"🇦🇷",iso:"ar"},{id:"cpv",name:"الرأس الأخضر",flag:"🇨🇻",iso:"cv"}
 ];
 const TEAM_MAP = Object.fromEntries(TEAMS.map(t=>[t.id,t]));
+function flagImg(t){
+  if(!t) return "";
+  return `<img src="https://flagcdn.com/w40/${t.iso}.png" class="flag-img" alt="" onerror="this.outerHTML='<span>${t.flag}</span>'">`;
+}
 
 /* ============ REAL BRACKET (Round of 32 → Final) ============ */
 const MATCHES = {
@@ -181,14 +191,13 @@ const MATCHES = {
   m31:{from:["m29","m30"]}
 };
 const ROUNDS = [
-  {key:"r32", label:"دور الـ32", matches:["m1","m2","m3","m4","m5","m6","m7","m8","m9","m10","m11","m12","m13","m14","m15","m16"]},
-  {key:"r16", label:"دور الـ16", matches:["m17","m18","m19","m20","m21","m22","m23","m24"]},
-  {key:"qf", label:"ربع النهائي", matches:["m25","m26","m27","m28"]},
-  {key:"sf", label:"نصف النهائي", matches:["m29","m30"]},
-  {key:"final", label:"النهائي", matches:["m31"]}
+  {key:"r32", label:"دور الـ32", matches:["m1","m2","m3","m4","m5","m6","m7","m8","m9","m10","m11","m12","m13","m14","m15","m16"], dateText:"حتى 3 يوليو"},
+  {key:"r16", label:"دور الـ16", matches:["m17","m18","m19","m20","m21","m22","m23","m24"], dateText:"4 - 7 يوليو"},
+  {key:"qf", label:"ربع النهائي", matches:["m25","m26","m27","m28"], dateText:"9 - 11 يوليو"},
+  {key:"sf", label:"نصف النهائي", matches:["m29","m30"], dateText:"14 - 15 يوليو"},
+  {key:"final", label:"النهائي", matches:["m31"], dateText:"19 يوليو"}
 ];
 const MATCH_IDS = Object.keys(MATCHES);
-
 function getMatchTeams(matchId, resultsObj){
   const m = MATCHES[matchId];
   if(m.teams) return m.teams;
@@ -198,14 +207,14 @@ function sanitizeKey(s){ return s.trim().replace(/[.#$\[\]\/]/g,"_").slice(0,40)
 
 /* ============ STATE ============ */
 let state = {
-  username: null, userKey: null, screen: "login", tab: "predict",
-  draft: {}, groupView: null,
-  connected: {core:false, predictions:false, submissions:false, users:false, groups:false},
-  _adminDraft: null
+  username:null, userKey:null, screen:"login", tab:"predict", draft:{}, groupView:null,
+  connected:{core:false, predictions:false, submissions:false, users:false, groups:false, chats:false},
+  _adminDraft:null
 };
-let MIRROR = { core:{results:{}, roundState:{currentIndex:0}, roundHistory:{}, announcement:""}, predictions:{}, submissions:{}, users:{}, groups:{} };
+let MIRROR = { core:{results:{}, roundState:{currentIndex:0}, roundHistory:{}, roundDeadlines:{}, announcement:""}, predictions:{}, submissions:{}, users:{}, groups:{}, chats:{} };
 let seenRoundHistoryKeys = new Set();
 let coreLoadedOnce = false;
+let countdownTimer = null;
 
 /* ============ FIREBASE REST ============ */
 async function fbSet(path, value){
@@ -219,126 +228,125 @@ async function fbPatch(path, value){
 
 /* ============ DEEP MERGE FOR SSE ============ */
 function deepApplyPut(store, path, data){
-  if(path === "/"){ return data === null ? {} : data; }
+  if(path === "/") return data === null ? {} : data;
   const parts = path.slice(1).split("/");
   let obj = store;
-  for(let i=0;i<parts.length-1;i++){
-    const p = parts[i];
-    if(typeof obj[p] !== "object" || obj[p]===null) obj[p] = {};
-    obj = obj[p];
-  }
+  for(let i=0;i<parts.length-1;i++){ const p=parts[i]; if(typeof obj[p]!=="object"||obj[p]===null) obj[p]={}; obj=obj[p]; }
   const last = parts[parts.length-1];
-  if(data === null) delete obj[last]; else obj[last] = data;
+  if(data===null) delete obj[last]; else obj[last]=data;
   return store;
 }
 function deepApplyPatch(store, path, data){
   let obj = store;
-  if(path !== "/"){
-    const parts = path.slice(1).split("/");
-    for(const p of parts){
-      if(typeof obj[p] !== "object" || obj[p]===null) obj[p] = {};
-      obj = obj[p];
-    }
-  }
+  if(path!=="/"){ const parts=path.slice(1).split("/"); for(const p of parts){ if(typeof obj[p]!=="object"||obj[p]===null) obj[p]={}; obj=obj[p]; } }
   Object.assign(obj, data||{});
   return store;
 }
-
 function openStream(node){
   return new Promise((resolve)=>{
-    let resolved = false;
+    let resolved=false;
     const es = new EventSource(`${FIREBASE_URL}/${node}.json`);
-    es.addEventListener("put", (e)=>{
-      const payload = JSON.parse(e.data);
-      MIRROR[node] = deepApplyPut(MIRROR[node]||{}, payload.path, payload.data);
-      state.connected[node] = true;
-      if(!resolved){ resolved = true; resolve(); }
+    es.addEventListener("put",(e)=>{
+      const payload=JSON.parse(e.data);
+      MIRROR[node]=deepApplyPut(MIRROR[node]||{}, payload.path, payload.data);
+      state.connected[node]=true;
+      if(!resolved){resolved=true;resolve();}
       onRemoteUpdate(node);
     });
-    es.addEventListener("patch", (e)=>{
-      const payload = JSON.parse(e.data);
+    es.addEventListener("patch",(e)=>{
+      const payload=JSON.parse(e.data);
       deepApplyPatch(MIRROR[node]||{}, payload.path, payload.data);
       onRemoteUpdate(node);
     });
-    es.onerror = ()=>{ state.connected[node] = false; if(!resolved){ resolved = true; resolve(); } updateConnDot(); };
+    es.onerror=()=>{ state.connected[node]=false; if(!resolved){resolved=true;resolve();} updateConnDot(); };
   });
 }
-
 function onRemoteUpdate(node){
-  if(node === "core"){
-    if(!MIRROR.core.results) MIRROR.core.results = {};
-    if(!MIRROR.core.roundState) MIRROR.core.roundState = {currentIndex:0};
-    if(!MIRROR.core.roundHistory) MIRROR.core.roundHistory = {};
+  if(node==="core"){
+    if(!MIRROR.core.results) MIRROR.core.results={};
+    if(!MIRROR.core.roundState) MIRROR.core.roundState={currentIndex:0};
+    if(!MIRROR.core.roundHistory) MIRROR.core.roundHistory={};
+    if(!MIRROR.core.roundDeadlines) MIRROR.core.roundDeadlines={};
     const keys = Object.keys(MIRROR.core.roundHistory);
-    if(!coreLoadedOnce){
-      keys.forEach(k=>seenRoundHistoryKeys.add(k));
-      coreLoadedOnce = true;
-    } else {
+    if(!coreLoadedOnce){ keys.forEach(k=>seenRoundHistoryKeys.add(k)); coreLoadedOnce=true; }
+    else{
       keys.forEach(k=>{
         if(!seenRoundHistoryKeys.has(k)){
           seenRoundHistoryKeys.add(k);
           const rd = ROUNDS.find(r=>r.key===k);
-          showCelebration(rd ? rd.label : k, MIRROR.core.roundHistory[k]);
+          showCelebration(rd?rd.label:k, MIRROR.core.roundHistory[k]);
         }
       });
     }
     updateTicker();
   }
   updateConnDot();
-  if(state.screen === "home"){ renderTabOnly(); }
+  if(state.screen==="home") renderTabOnly();
 }
-
 async function initSync(){
-  await Promise.all([openStream("core"), openStream("predictions"), openStream("submissions"), openStream("users"), openStream("groups")]);
-  state.screen = "login";
-  render();
-  updateTicker();
+  await Promise.all([openStream("core"), openStream("predictions"), openStream("submissions"), openStream("users"), openStream("groups"), openStream("chats")]);
+  state.screen="login"; render(); updateTicker(); startCountdownLoop();
 }
 
 /* ============ SCORING ============ */
 function scorePrediction(pred, results){
-  if(!pred || !results) return 0;
-  let total = 0;
-  MATCH_IDS.forEach(id=>{ if(results[id] && pred[id] === results[id]) total++; });
+  if(!pred||!results) return 0;
+  let total=0; MATCH_IDS.forEach(id=>{ if(results[id] && pred[id]===results[id]) total++; });
   return total;
 }
+function decidedMatchesCount(){ const results=MIRROR.core.results||{}; return MATCH_IDS.filter(id=>results[id]).length; }
+function accuracyPct(total){ const d=decidedMatchesCount(); return d? Math.round(total/d*100):0; }
 function computeLeaderboardRows(){
-  const results = MIRROR.core.results || {};
-  const rows = Object.entries(MIRROR.users||{}).map(([key,u])=>({ key, user: u.name || key, total: scorePrediction(MIRROR.predictions[key], results) }));
+  const results = MIRROR.core.results||{};
+  const rows = Object.entries(MIRROR.users||{}).map(([key,u])=>({ key, user:u.name||key, total:scorePrediction(MIRROR.predictions[key],results) }));
   rows.sort((a,b)=>b.total-a.total);
   return rows;
 }
 
 /* ============ UI HELPERS ============ */
-function showToast(msg){ const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),2200); }
+function showToast(msg){ const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),2600); }
 function genCode(){ const c="ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let s=""; for(let i=0;i<5;i++) s+=c[Math.floor(Math.random()*c.length)]; return s; }
-function escapeHtml(s){ return (s||"").replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
+function escapeHtml(s){ return (s||"").replace(/[&<>"']/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
 function updateConnDot(){ const el=document.getElementById("connDot"); if(!el) return; const allLive=Object.values(state.connected).every(v=>v); el.className="dot"+(allLive?" live":""); }
 function updateTicker(){
-  const text = (MIRROR.core.announcement||"").trim();
-  const wrap = document.getElementById("tickerWrap"); const track = document.getElementById("tickerTrack");
+  const text=(MIRROR.core.announcement||"").trim();
+  const wrap=document.getElementById("tickerWrap"), track=document.getElementById("tickerTrack");
   if(!wrap) return;
-  if(text){ wrap.style.display="block"; track.textContent = "📢 "+text+"        📢 "+text; }
-  else { wrap.style.display="none"; }
+  if(text){ wrap.style.display="block"; track.textContent="📢 "+text+"        📢 "+text; } else { wrap.style.display="none"; }
 }
 function showCelebration(roundLabel, info){
-  const modal = document.getElementById("celebrateModal");
-  const content = document.getElementById("celebrateContent");
-  content.innerHTML = `
-    <div class="celebrate-emoji">🎉🏆🎉</div>
+  const modal=document.getElementById("celebrateModal"), content=document.getElementById("celebrateContent");
+  content.innerHTML = `<div class="celebrate-emoji">🎉🏆🎉</div>
     <div class="celebrate-title">انتهى ${escapeHtml(roundLabel)}!</div>
     <div class="celebrate-sub">👑 المتصدر الآن: <b style="color:var(--gold)">${escapeHtml(info.leaderName||'-')}</b><br>برصيد ${info.points||0} نقطة</div>
-    <button class="btn-gold" style="width:100%" onclick="closeCelebration()">تمام يا نجم 🔥</button>
-  `;
+    <button class="btn-gold" style="width:100%" onclick="closeCelebration()">تمام يا نجم 🔥</button>`;
   modal.classList.add("show");
-  setTimeout(()=>{ modal.classList.remove("show"); }, 6000);
+  setTimeout(()=>modal.classList.remove("show"), 6000);
 }
 function closeCelebration(){ document.getElementById("celebrateModal").classList.remove("show"); }
 
+/* ============ COUNTDOWN ============ */
+function startCountdownLoop(){
+  if(countdownTimer) clearInterval(countdownTimer);
+  countdownTimer = setInterval(()=>{
+    const el = document.getElementById("countdownBox");
+    if(!el || state.screen!=="home" || state.tab!=="predict") return;
+    const rs = MIRROR.core.roundState||{currentIndex:0};
+    if(rs.currentIndex>=ROUNDS.length) return;
+    const round = ROUNDS[rs.currentIndex];
+    const deadline = (MIRROR.core.roundDeadlines||{})[round.key];
+    if(!deadline){ el.textContent="⏳ الأدمن لسه محددش موعد نهائي لهذا الدور"; return; }
+    const diff = new Date(deadline).getTime() - Date.now();
+    if(diff<=0){ el.textContent="⏰ انتهى الوقت المحدد — في انتظار الأدمن يقفل الدور"; return; }
+    const d=Math.floor(diff/86400000), h=Math.floor((diff%86400000)/3600000), m=Math.floor((diff%3600000)/60000), s=Math.floor((diff%60000)/1000);
+    el.textContent = `⏳ الوقت المتبقي لقفل ${round.label}: ${d>0?d+'ي ':''}${h}س ${m}د ${s}ث`;
+  }, 1000);
+}
+
 /* ============ RENDER ROOT ============ */
 async function render(){
-  const app = document.getElementById("app");
-  if(state.screen === "login"){ app.innerHTML = renderLogin(); return; }
+  const app=document.getElementById("app");
+  if(state.screen==="login"){ app.innerHTML=renderLogin(); return; }
   app.innerHTML = `
     <div class="stadium-header">
       <span class="eyebrow">FIFA WORLD CUP 2026</span>
@@ -352,6 +360,7 @@ async function render(){
       <button class="tab ${state.tab==='global'?'active':''}" onclick="setTab('global')">الترتيب العام</button>
       <button class="tab ${state.tab==='groups'?'active':''}" onclick="setTab('groups')">مجموعاتي</button>
       <button class="tab ${state.tab==='profile'?'active':''}" onclick="setTab('profile')">حسابي</button>
+      <button class="tab ${state.tab==='schedule'?'active':''}" onclick="setTab('schedule')">الجدول</button>
     </div>
     <div id="tabContent"></div>
   `;
@@ -359,12 +368,13 @@ async function render(){
   renderTabOnly();
 }
 function renderTabOnly(){
-  const content = document.getElementById("tabContent");
+  const content=document.getElementById("tabContent");
   if(!content) return;
-  if(state.tab==='predict') content.innerHTML = renderPredictTab();
-  else if(state.tab==='global') content.innerHTML = renderGlobalTab();
-  else if(state.tab==='groups') content.innerHTML = renderGroupsTab();
-  else if(state.tab==='profile') content.innerHTML = renderProfileTab();
+  if(state.tab==='predict') content.innerHTML=renderPredictTab();
+  else if(state.tab==='global') content.innerHTML=renderGlobalTab();
+  else if(state.tab==='groups') content.innerHTML=renderGroupsTab();
+  else if(state.tab==='profile') content.innerHTML=renderProfileTab();
+  else if(state.tab==='schedule') content.innerHTML=renderScheduleTab();
 }
 function renderLogin(){
   return `
@@ -382,12 +392,12 @@ function renderLogin(){
   `;
 }
 async function doLogin(){
-  const val = document.getElementById("loginName").value.trim();
+  const val=document.getElementById("loginName").value.trim();
   if(!val){ showToast("اكتب اسم الأول 🙏"); return; }
-  if(val.length < 2){ showToast("الاسم قصير أوي"); return; }
-  const key = sanitizeKey(val);
-  if(!MIRROR.users[key]) await fbSet("users/"+key, {name: val});
-  state.username = val; state.userKey = key; state.screen = "home"; state.tab = "predict";
+  if(val.length<2){ showToast("الاسم قصير أوي"); return; }
+  const key=sanitizeKey(val);
+  if(!MIRROR.users[key]) await fbSet("users/"+key, {name:val});
+  state.username=val; state.userKey=key; state.screen="home"; state.tab="predict";
   await render();
 }
 function logout(){ state.username=null; state.userKey=null; state.draft={}; state.screen="login"; render(); }
@@ -396,45 +406,38 @@ function setTab(t){ state.tab=t; state.groupView=null; renderTabOnly(); }
 /* ============ PREDICT TAB ============ */
 function matchRowPickable(id, tA, tB, picked){
   return `<div class="match-row">
-    <div class="team-pick ${picked===tA.id?'selected':''}" onclick="pickWinner('${id}','${tA.id}')"><span class="flag">${tA.flag}</span><span>${tA.name}</span></div>
+    <div class="team-pick ${picked===tA.id?'selected':''}" onclick="pickWinner('${id}','${tA.id}')">${flagImg(tA)}<span>${tA.name}</span></div>
     <div class="vs">VS</div>
-    <div class="team-pick ${picked===tB.id?'selected':''}" onclick="pickWinner('${id}','${tB.id}')"><span class="flag">${tB.flag}</span><span>${tB.name}</span></div>
+    <div class="team-pick ${picked===tB.id?'selected':''}" onclick="pickWinner('${id}','${tB.id}')">${flagImg(tB)}<span>${tB.name}</span></div>
   </div>`;
 }
 function matchRowReadOnly(tA, tB, mine, resultId){
-  const aCls = mine===tA.id ? (resultId ? (resultId===tA.id?'correct':'wrong') : 'selected') : '';
-  const bCls = mine===tB.id ? (resultId ? (resultId===tB.id?'correct':'wrong') : 'selected') : '';
+  const aCls = mine===tA.id ? (resultId?(resultId===tA.id?'correct':'wrong'):'selected') : '';
+  const bCls = mine===tB.id ? (resultId?(resultId===tB.id?'correct':'wrong'):'selected') : '';
   return `<div class="match-row">
-    <div class="team-pick ${aCls}"><span class="flag">${tA.flag}</span><span>${tA.name}</span></div>
+    <div class="team-pick ${aCls}">${flagImg(tA)}<span>${tA.name}</span></div>
     <div class="vs">VS</div>
-    <div class="team-pick ${bCls}"><span class="flag">${tB.flag}</span><span>${tB.name}</span></div>
+    <div class="team-pick ${bCls}">${flagImg(tB)}<span>${tB.name}</span></div>
   </div>`;
 }
 function renderPredictTab(){
-  const rs = MIRROR.core.roundState || {currentIndex:0};
-  const idx = rs.currentIndex;
-  const results = MIRROR.core.results || {};
-  if(idx >= ROUNDS.length){
-    return `<div class="card"><div class="empty">🏆 انتهت البطولة! شكرًا لمتابعتك وتوقعاتك طول الطريق</div></div>` + renderMyHistory(ROUNDS.length, results);
+  const rs=MIRROR.core.roundState||{currentIndex:0};
+  const idx=rs.currentIndex;
+  const results=MIRROR.core.results||{};
+  if(idx>=ROUNDS.length){
+    return `<div class="card"><div class="empty">🏆 انتهت البطولة! شكرًا لمتابعتك وتوقعاتك طول الطريق</div></div>`+renderMyHistory(ROUNDS.length, results);
   }
-  const round = ROUNDS[idx];
-  const mySubmitted = ((MIRROR.submissions||{})[state.userKey]||{})[round.key];
-  const myPreds = MIRROR.predictions[state.userKey] || {};
-  let html = `<div class="card"><div class="round-title" style="font-size:20px;">${round.label}<span class="line"></span></div>`;
+  const round=ROUNDS[idx];
+  const mySubmitted=((MIRROR.submissions||{})[state.userKey]||{})[round.key];
+  const myPreds=MIRROR.predictions[state.userKey]||{};
+  let html = `<div class="card"><div class="round-title" style="font-size:20px;">${round.label}<span class="line"></span></div>
+    <div class="countdown-box" id="countdownBox">⏳ جاري الحساب...</div>`;
   if(mySubmitted){
     html += `<div class="counter" style="margin-bottom:14px;">✅ اتبعتت توقعاتك للدور ده — استنى النتائج الفعلية</div>`;
-    round.matches.forEach(id=>{
-      const teams = getMatchTeams(id, results);
-      const tA = TEAM_MAP[teams[0]], tB = TEAM_MAP[teams[1]];
-      html += matchRowReadOnly(tA, tB, myPreds[id], null);
-    });
+    round.matches.forEach(id=>{ const teams=getMatchTeams(id,results); const tA=TEAM_MAP[teams[0]], tB=TEAM_MAP[teams[1]]; html+=matchRowReadOnly(tA,tB,myPreds[id],null); });
   } else {
-    round.matches.forEach(id=>{
-      const teams = getMatchTeams(id, results);
-      const tA = TEAM_MAP[teams[0]], tB = TEAM_MAP[teams[1]];
-      html += matchRowPickable(id, tA, tB, state.draft[id]);
-    });
-    const filled = round.matches.filter(id=>state.draft[id]).length;
+    round.matches.forEach(id=>{ const teams=getMatchTeams(id,results); const tA=TEAM_MAP[teams[0]], tB=TEAM_MAP[teams[1]]; html+=matchRowPickable(id,tA,tB,state.draft[id]); });
+    const filled=round.matches.filter(id=>state.draft[id]).length;
     html += `<div class="counter">اخترت <b>${filled}</b> من <b>${round.matches.length}</b></div>`;
     html += `<div class="btn-row"><button class="btn-gold" ${filled<round.matches.length?'disabled style="opacity:.4"':''} onclick="submitRoundPredictions('${round.key}')">إرسال توقعاتي (نهائي، مش هتقدر تعدلها)</button></div>`;
   }
@@ -442,34 +445,29 @@ function renderPredictTab(){
   html += renderMyHistory(idx, results);
   return html;
 }
-function pickWinner(matchId, teamId){ state.draft[matchId] = teamId; renderTabOnly(); }
+function pickWinner(matchId, teamId){ state.draft[matchId]=teamId; renderTabOnly(); }
 async function submitRoundPredictions(roundKey){
-  const round = ROUNDS.find(r=>r.key===roundKey);
-  const picks = {};
-  round.matches.forEach(id=>{ if(state.draft[id]) picks[id] = state.draft[id]; });
-  if(Object.keys(picks).length < round.matches.length){ showToast("لازم تختار كل المباريات"); return; }
+  const round=ROUNDS.find(r=>r.key===roundKey);
+  const picks={};
+  round.matches.forEach(id=>{ if(state.draft[id]) picks[id]=state.draft[id]; });
+  if(Object.keys(picks).length<round.matches.length){ showToast("لازم تختار كل المباريات"); return; }
   await fbPatch("predictions/"+state.userKey, picks);
-  MIRROR.predictions[state.userKey] = {...(MIRROR.predictions[state.userKey]||{}), ...picks};
-  await fbSet(`submissions/${state.userKey}/${roundKey}`, true);
-  MIRROR.submissions[state.userKey] = {...(MIRROR.submissions[state.userKey]||{}), [roundKey]:true};
-  state.draft = {};
+  MIRROR.predictions[state.userKey]={...(MIRROR.predictions[state.userKey]||{}), ...picks};
+  await fbSet(`submissions/${state.userKey}/${roundKey}`, Date.now());
+  MIRROR.submissions[state.userKey]={...(MIRROR.submissions[state.userKey]||{}), [roundKey]:Date.now()};
+  state.draft={};
   showToast("اتبعتت توقعاتك ✅ بالتوفيق!");
   renderTabOnly();
 }
 function renderMyHistory(currentIdx, results){
-  const myPreds = MIRROR.predictions[state.userKey] || {};
-  let html = "";
+  const myPreds=MIRROR.predictions[state.userKey]||{};
+  let html="";
   for(let i=0;i<currentIdx;i++){
-    const r = ROUNDS[i];
-    const submitted = ((MIRROR.submissions||{})[state.userKey]||{})[r.key];
+    const r=ROUNDS[i];
+    const submitted=((MIRROR.submissions||{})[state.userKey]||{})[r.key];
     if(!submitted) continue;
     html += `<div class="card"><h2 style="font-size:15px;"><span class="num">📜</span> ${r.label} — توقعاتك</h2>`;
-    r.matches.forEach(id=>{
-      const teams = getMatchTeams(id, results);
-      if(!teams[0] || !teams[1]) return;
-      const tA=TEAM_MAP[teams[0]], tB=TEAM_MAP[teams[1]];
-      html += matchRowReadOnly(tA, tB, myPreds[id], results[id]);
-    });
+    r.matches.forEach(id=>{ const teams=getMatchTeams(id,results); if(!teams[0]||!teams[1]) return; const tA=TEAM_MAP[teams[0]], tB=TEAM_MAP[teams[1]]; html+=matchRowReadOnly(tA,tB,myPreds[id],results[id]); });
     html += `</div>`;
   }
   return html;
@@ -477,56 +475,72 @@ function renderMyHistory(currentIdx, results){
 
 /* ============ GLOBAL TAB ============ */
 function renderGlobalTab(){
-  const rows = computeLeaderboardRows();
-  let html = renderRoundHistoryCards();
+  const rows=computeLeaderboardRows();
+  let html = renderStatsCard();
+  html += renderRoundHistoryCards();
   html += `<div class="card"><h2><span class="num">🏆</span> الترتيب العام — كل المسجلين</h2>`;
-  if(rows.length === 0){
-    html += `<div class="empty">محدش سجل توقعات لسه</div>`;
-  } else {
-    html += `<table><thead><tr><th>#</th><th>الاسم</th><th>النقاط</th></tr></thead><tbody>`;
+  if(rows.length===0){ html += `<div class="empty">محدش سجل توقعات لسه</div>`; }
+  else {
+    html += `<table><thead><tr><th>#</th><th>الاسم</th><th>النقاط</th><th>الدقة</th></tr></thead><tbody>`;
     rows.forEach((r,i)=>{
-      const rankClass = i===0?'g1':i===1?'g2':i===2?'g3':'';
-      const crown = (i===0 && r.total>0) ? '<span class="crown">👑</span>' : '';
-      html += `<tr class="${r.user===state.username?'me':''}"><td class="rank ${rankClass}">${i+1}</td><td>${crown}${escapeHtml(r.user)}${r.user===state.username?' (انت)':''}</td><td>${r.total}</td></tr>`;
+      const rankClass=i===0?'g1':i===1?'g2':i===2?'g3':'';
+      const crown=(i===0 && r.total>0)?'<span class="crown">👑</span>':'';
+      html += `<tr class="${r.user===state.username?'me':''}"><td class="rank ${rankClass}">${i+1}</td><td>${crown}${escapeHtml(r.user)}${r.user===state.username?' (انت)':''}</td><td>${r.total}</td><td class="acc-pill">${accuracyPct(r.total)}%</td></tr>`;
     });
     html += `</tbody></table>`;
   }
   html += `</div>`;
   return html;
 }
+function renderStatsCard(){
+  const results=MIRROR.core.results||{};
+  const totalMatches=decidedMatchesCount();
+  const allPreds=Object.values(MIRROR.predictions||{});
+  let totalGuesses=0, totalCorrect=0;
+  allPreds.forEach(p=>{ MATCH_IDS.forEach(id=>{ if(p[id] && results[id]){ totalGuesses++; if(p[id]===results[id]) totalCorrect++; } }); });
+  const overallAcc = totalGuesses? Math.round(totalCorrect/totalGuesses*100):0;
+  const participants=Object.keys(MIRROR.users||{}).length;
+  return `<div class="card"><h2><span class="num">📊</span> إحصائيات عامة</h2>
+    <div class="stat-grid">
+      <div class="stat-box"><div class="stat-num">${participants}</div><div class="stat-lbl">مشترك</div></div>
+      <div class="stat-box"><div class="stat-num">${totalMatches}</div><div class="stat-lbl">مباراة اتحسمت</div></div>
+      <div class="stat-box"><div class="stat-num">${overallAcc}%</div><div class="stat-lbl">دقة الجميع</div></div>
+    </div>
+  </div>`;
+}
 function renderRoundHistoryCards(){
-  const rh = MIRROR.core.roundHistory || {};
-  const entries = ROUNDS.filter(r=>rh[r.key]).map(r=>({label:r.label, ...rh[r.key]}));
+  const rh=MIRROR.core.roundHistory||{};
+  const entries=ROUNDS.filter(r=>rh[r.key]).map(r=>({label:r.label, ...rh[r.key]}));
   if(entries.length===0) return "";
-  let html = `<div class="card"><h2><span class="num">🎉</span> متصدر كل دور</h2>`;
-  entries.forEach(e=>{
-    html += `<div class="history-row"><b style="color:var(--gold);">${escapeHtml(e.label)}</b><span>👑 ${escapeHtml(e.leaderName)} — ${e.points} نقطة</span></div>`;
-  });
+  let html=`<div class="card"><h2><span class="num">🎉</span> متصدر كل دور</h2>`;
+  entries.forEach(e=>{ html += `<div class="history-row"><b style="color:var(--gold);">${escapeHtml(e.label)}</b><span>👑 ${escapeHtml(e.leaderName)} — ${e.points} نقطة</span></div>`; });
   html += `</div>`;
   return html;
 }
 
 /* ============ GROUPS TAB ============ */
 function renderGroupsTab(){
-  const groups = Object.values(MIRROR.groups||{});
-  const myGroups = groups.filter(g => (g.members||[]).includes(state.userKey));
+  const groups=Object.values(MIRROR.groups||{});
+  const myGroups=groups.filter(g=>(g.members||[]).includes(state.userKey));
   if(state.groupView){
-    const g = (MIRROR.groups||{})[state.groupView];
+    const g=(MIRROR.groups||{})[state.groupView];
     if(!g){ state.groupView=null; return renderGroupsTab(); }
-    const results = MIRROR.core.results || {};
-    const rows = (g.members||[]).map(key=>({ user: (MIRROR.users[key]||{}).name || key, total: scorePrediction(MIRROR.predictions[key], results) }));
+    const results=MIRROR.core.results||{};
+    const rows=(g.members||[]).map(key=>({ key, user:(MIRROR.users[key]||{}).name||key, total:scorePrediction(MIRROR.predictions[key],results) }));
     rows.sort((a,b)=>b.total-a.total);
     let html = `<div class="card">
       <a onclick="backToGroups()" style="color:var(--gold);cursor:pointer;font-size:13px;">← رجوع للمجموعات</a>
       <h2 style="margin-top:10px;"><span class="num">👥</span> ${escapeHtml(g.name)}</h2>
       <div class="counter">كود الدعوة: <span class="code-badge">${g.code}</span> &nbsp; (${(g.members||[]).length} أعضاء)</div>
-      <table><thead><tr><th>#</th><th>الاسم</th><th>النقاط</th></tr></thead><tbody>`;
+      <table><thead><tr><th>#</th><th>الاسم</th><th>النقاط</th><th>الدقة</th></tr></thead><tbody>`;
     rows.forEach((r,i)=>{
-      const rankClass = i===0?'g1':i===1?'g2':i===2?'g3':'';
-      const crown = (i===0 && r.total>0) ? '<span class="crown">👑</span>' : '';
-      html += `<tr class="${r.user===state.username?'me':''}"><td class="rank ${rankClass}">${i+1}</td><td>${crown}${escapeHtml(r.user)}</td><td>${r.total}</td></tr>`;
+      const rankClass=i===0?'g1':i===1?'g2':i===2?'g3':'';
+      const crown=(i===0 && r.total>0)?'<span class="crown">👑</span>':'';
+      html += `<tr class="${r.user===state.username?'me':''}"><td class="rank ${rankClass}">${i+1}</td><td>${crown}${escapeHtml(r.user)}</td><td>${r.total}</td><td class="acc-pill">${accuracyPct(r.total)}%</td></tr>`;
     });
     html += `</tbody></table></div>`;
+    html += renderGroupDetailedPicks(g);
+    html += renderGroupChat(g.id);
     return html;
   }
   let html = `<div class="card">
@@ -540,65 +554,145 @@ function renderGroupsTab(){
     <button class="btn-gold" onclick="joinGroup()">انضمام</button>
   </div>
   <div class="card"><h2><span class="num">📋</span> مجموعاتي</h2>`;
-  if(myGroups.length === 0){
-    html += `<div class="empty">لسه مش منضم لأي مجموعة. اعمل واحدة أو انضم بكود!</div>`;
-  } else {
-    myGroups.forEach(g=>{
-      html += `<div class="group-card" onclick="viewGroup('${g.id}')"><div><div style="font-weight:700;">${escapeHtml(g.name)}</div><div class="meta">${(g.members||[]).length} أعضاء</div></div><span class="code-badge">${g.code}</span></div>`;
-    });
+  if(myGroups.length===0){ html += `<div class="empty">لسه مش منضم لأي مجموعة. اعمل واحدة أو انضم بكود!</div>`; }
+  else {
+    myGroups.forEach(g=>{ html += `<div class="group-card" onclick="viewGroup('${g.id}')"><div><div style="font-weight:700;">${escapeHtml(g.name)}</div><div class="meta">${(g.members||[]).length} أعضاء</div></div><span class="code-badge">${g.code}</span></div>`; });
   }
   html += `</div>`;
   return html;
 }
-async function createGroup(){
-  const name = document.getElementById("newGroupName").value.trim();
-  if(!name){ showToast("اكتب اسم المجموعة"); return; }
-  const id = "g"+Date.now();
-  const g = {id, name, code:genCode(), owner:state.userKey, members:[state.userKey]};
-  await fbSet("groups/"+id, g);
-  MIRROR.groups[id] = g;
-  showToast("اتعملت المجموعة 🎉");
+function renderGroupDetailedPicks(g){
+  const rs=MIRROR.core.roundState||{currentIndex:0};
+  const idx=rs.currentIndex-1;
+  if(idx<0) return "";
+  const round=ROUNDS[idx];
+  const results=MIRROR.core.results||{};
+  let html = `<div class="card"><h2 style="font-size:15px;"><span class="num">🔍</span> تفاصيل توقعات ${round.label}</h2><div style="overflow-x:auto;"><table><thead><tr><th>العضو</th>`;
+  round.matches.forEach(id=>{ const teams=getMatchTeams(id,results); const a=TEAM_MAP[teams[0]], b=TEAM_MAP[teams[1]]; html += `<th>${a?a.name.slice(0,4):'؟'}/${b?b.name.slice(0,4):'؟'}</th>`; });
+  html += `</tr></thead><tbody>`;
+  (g.members||[]).forEach(key=>{
+    const preds=MIRROR.predictions[key]||{};
+    html += `<tr><td>${escapeHtml((MIRROR.users[key]||{}).name||key)}</td>`;
+    round.matches.forEach(id=>{
+      const pick=preds[id]; const correct=results[id]&&pick===results[id]; const wrong=results[id]&&pick&&pick!==results[id];
+      const t=pick?TEAM_MAP[pick]:null;
+      html += `<td style="color:${correct?'var(--green-ok)':wrong?'var(--away-red)':'var(--muted)'}">${t?flagImg(t):'-'}</td>`;
+    });
+    html += `</tr>`;
+  });
+  html += `</tbody></table></div></div>`;
+  return html;
+}
+function renderGroupChat(gid){
+  const msgs=Object.entries(MIRROR.chats[gid]||{}).sort((a,b)=>a[1].ts-b[1].ts);
+  let html = `<div class="card"><h2 style="font-size:15px;"><span class="num">💬</span> دردشة المجموعة</h2><div class="chat-box" id="chatBox">`;
+  if(msgs.length===0) html += `<div class="empty">ابدأ أول رسالة في المجموعة</div>`;
+  msgs.forEach(([id,m])=>{ html += `<div class="chat-msg ${m.user===state.userKey?'mine':''}"><b>${escapeHtml((MIRROR.users[m.user]||{}).name||m.user)}:</b> ${escapeHtml(m.text)}</div>`; });
+  html += `</div><div class="btn-row" style="margin-top:10px;"><input type="text" id="chatInput" placeholder="اكتب رسالة..." style="flex:1;"><button class="btn-gold btn-sm" onclick="sendChatMsg('${gid}')">إرسال</button></div></div>`;
+  return html;
+}
+async function sendChatMsg(gid){
+  const inp=document.getElementById("chatInput"); const text=inp.value.trim();
+  if(!text) return;
+  const id="msg"+Date.now()+Math.floor(Math.random()*1000);
+  const msg={user:state.userKey, text, ts:Date.now()};
+  await fbSet(`chats/${gid}/${id}`, msg);
+  if(!MIRROR.chats[gid]) MIRROR.chats[gid]={};
+  MIRROR.chats[gid][id]=msg;
+  inp.value="";
   renderTabOnly();
 }
+async function createGroup(){
+  const name=document.getElementById("newGroupName").value.trim();
+  if(!name){ showToast("اكتب اسم المجموعة"); return; }
+  const id="g"+Date.now();
+  const g={id, name, code:genCode(), owner:state.userKey, members:[state.userKey]};
+  await fbSet("groups/"+id, g); MIRROR.groups[id]=g;
+  showToast("اتعملت المجموعة 🎉"); renderTabOnly();
+}
 async function joinGroup(){
-  const code = document.getElementById("joinCode").value.trim().toUpperCase();
+  const code=document.getElementById("joinCode").value.trim().toUpperCase();
   if(!code){ showToast("اكتب الكود"); return; }
-  const entry = Object.entries(MIRROR.groups||{}).find(([id,g])=>g.code===code);
+  const entry=Object.entries(MIRROR.groups||{}).find(([id,g])=>g.code===code);
   if(!entry){ showToast("الكود مش موجود"); return; }
-  const [id, g] = entry;
-  if(!(g.members||[]).includes(state.userKey)){
-    g.members = [...(g.members||[]), state.userKey];
-    await fbSet("groups/"+id, g);
-    MIRROR.groups[id] = g;
-  }
-  showToast(`انضميت لـ ${g.name} ✅`);
-  renderTabOnly();
+  const [id,g]=entry;
+  if(!(g.members||[]).includes(state.userKey)){ g.members=[...(g.members||[]), state.userKey]; await fbSet("groups/"+id, g); MIRROR.groups[id]=g; }
+  showToast(`انضميت لـ ${g.name} ✅`); renderTabOnly();
 }
 function viewGroup(id){ state.groupView=id; renderTabOnly(); }
 function backToGroups(){ state.groupView=null; renderTabOnly(); }
 
 /* ============ PROFILE TAB ============ */
+function computeBadges(userKey){
+  const results=MIRROR.core.results||{};
+  const pred=MIRROR.predictions[userKey]||{};
+  const totalDecided=decidedMatchesCount();
+  const correct=scorePrediction(pred, results);
+  const badges=[];
+  const acc = totalDecided? correct/totalDecided*100 : 0;
+  if(totalDecided>=8 && acc>=70) badges.push("🎯 قناص التوقعات (دقة 70%+)");
+  const rs=MIRROR.core.roundState||{currentIndex:0};
+  for(let i=0;i<rs.currentIndex;i++){
+    const r=ROUNDS[i];
+    const submitted=((MIRROR.submissions||{})[userKey]||{})[r.key];
+    if(!submitted) continue;
+    const allCorrect=r.matches.every(id=>results[id] && pred[id]===results[id]);
+    if(allCorrect){ badges.push(`🔥 دور مثالي (${r.label})`); break; }
+  }
+  if(badges.length===0) badges.push("لسه مفيش شارات — كمّل توقعاتك عشان تكسب شارات 🏅");
+  return badges;
+}
+function renderProgressChart(){
+  const rh=MIRROR.core.roundHistory||{};
+  const pts=ROUNDS.filter(r=>rh[r.key] && rh[r.key].scores).map(r=>({label:r.label, value:(rh[r.key].scores[state.userKey]||0)}));
+  if(pts.length<2) return `<div class="card"><h2 style="font-size:15px;"><span class="num">📈</span> تطور نقاطك</h2><div class="empty">هيظهر الرسم بعد ما دورين يتقفلوا على الأقل</div></div>`;
+  const w=280,h=100,pad=12;
+  const max=Math.max(...pts.map(p=>p.value),1);
+  const stepX=(w-2*pad)/(pts.length-1);
+  const coords=pts.map((p,i)=>{ const x=pad+i*stepX; const y=h-pad-(p.value/max)*(h-2*pad); return [x,y]; });
+  const polyline=coords.map(c=>c.join(",")).join(" ");
+  const dots=coords.map(([x,y])=>`<circle cx="${x}" cy="${y}" r="3.5" fill="#F4B731"/>`).join("");
+  const labels=pts.map((p,i)=>`<text x="${coords[i][0]}" y="${h-1}" font-size="8" fill="#9FB8AA" text-anchor="middle">${p.value}</text>`).join("");
+  return `<div class="card"><h2 style="font-size:15px;"><span class="num">📈</span> تطور نقاطك عبر الأدوار</h2>
+    <svg viewBox="0 0 ${w} ${h}" style="width:100%;height:110px;"><polyline points="${polyline}" fill="none" stroke="#F4B731" stroke-width="2"/>${dots}${labels}</svg></div>`;
+}
 function renderProfileTab(){
-  const results = MIRROR.core.results || {};
-  const rows = computeLeaderboardRows();
-  const myRow = rows.find(r=>r.key===state.userKey);
-  const total = myRow ? myRow.total : 0;
-  const rank = rows.findIndex(r=>r.key===state.userKey)+1;
-  const isLeader = rank===1 && total>0;
-  const myGroups = Object.values(MIRROR.groups||{}).filter(g=>(g.members||[]).includes(state.userKey));
+  const rows=computeLeaderboardRows();
+  const myRow=rows.find(r=>r.key===state.userKey);
+  const total=myRow?myRow.total:0;
+  const rank=rows.findIndex(r=>r.key===state.userKey)+1;
+  const isLeader=rank===1 && total>0;
+  const myGroups=Object.values(MIRROR.groups||{}).filter(g=>(g.members||[]).includes(state.userKey));
+  const badges=computeBadges(state.userKey);
   let html = `<div class="card">
     <h2><span class="num">👤</span> حسابي</h2>
     <div style="font-size:22px;font-weight:800;color:var(--gold);font-family:'Cairo',sans-serif;">${isLeader?'👑 ':''}${escapeHtml(state.username)}</div>
-    <div class="counter" style="margin-top:10px;">الترتيب العام: <b>#${rank||'-'}</b> &nbsp;|&nbsp; مجموع النقاط: <b>${total}</b></div>
-  </div>
-  <div class="card"><h2><span class="num">👥</span> مجموعاتي (${myGroups.length})</h2>`;
-  if(myGroups.length===0){
-    html += `<div class="empty">لسه مش منضم لأي مجموعة</div>`;
-  } else {
-    myGroups.forEach(g=>{
-      html += `<div class="group-card" onclick="setTab('groups');viewGroup('${g.id}')"><div><div style="font-weight:700;">${escapeHtml(g.name)}</div><div class="meta">${(g.members||[]).length} أعضاء</div></div><span class="code-badge">${g.code}</span></div>`;
-    });
+    <div class="counter" style="margin-top:10px;">الترتيب العام: <b>#${rank||'-'}</b> &nbsp;|&nbsp; مجموع النقاط: <b>${total}</b> &nbsp;|&nbsp; الدقة: <b>${accuracyPct(total)}%</b></div>
+    <div style="margin-top:10px;">${badges.map(b=>`<span class="badge-pill">${escapeHtml(b)}</span>`).join("")}</div>
+  </div>`;
+  html += renderProgressChart();
+  html += `<div class="card"><h2><span class="num">👥</span> مجموعاتي (${myGroups.length})</h2>`;
+  if(myGroups.length===0){ html += `<div class="empty">لسه مش منضم لأي مجموعة</div>`; }
+  else {
+    myGroups.forEach(g=>{ html += `<div class="group-card" onclick="setTab('groups');viewGroup('${g.id}')"><div><div style="font-weight:700;">${escapeHtml(g.name)}</div><div class="meta">${(g.members||[]).length} أعضاء</div></div><span class="code-badge">${g.code}</span></div>`; });
   }
+  html += `</div>`;
+  return html;
+}
+
+/* ============ SCHEDULE TAB ============ */
+function renderScheduleTab(){
+  const rs=MIRROR.core.roundState||{currentIndex:0};
+  const deadlines=MIRROR.core.roundDeadlines||{};
+  let html = `<div class="card"><h2><span class="num">🗓️</span> جدول أدوار البطولة</h2>`;
+  ROUNDS.forEach((r,i)=>{
+    const dl=deadlines[r.key];
+    const dlText = dl ? new Date(dl).toLocaleString('ar-EG',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : "لسه محددش";
+    html += `<div class="schedule-row ${i===rs.currentIndex?'current':''}">
+      <div><div class="lbl">${r.label} ${i===rs.currentIndex?'⏳ (مفتوح دلوقتي)':i<rs.currentIndex?'✅':''}</div><div class="dt">مواعيد المباريات الرسمية: ${r.dateText}</div></div>
+      <div class="dt">قفل التوقعات: ${dlText}</div>
+    </div>`;
+  });
   html += `</div>`;
   return html;
 }
@@ -607,57 +701,55 @@ function renderProfileTab(){
 function openAdminModal(){ document.getElementById("adminModal").classList.add("show"); }
 function closeAdminModal(){ document.getElementById("adminModal").classList.remove("show"); document.getElementById("adminPinInput").value=""; }
 async function checkAdminPin(){
-  const val = document.getElementById("adminPinInput").value;
-  if(val === ADMIN_PIN){ closeAdminModal(); renderAdmin(); } else { showToast("الرمز غلط"); }
+  const val=document.getElementById("adminPinInput").value;
+  if(val===ADMIN_PIN){ closeAdminModal(); renderAdmin(); } else { showToast("الرمز غلط"); }
 }
 function clearAdminDownstream(matchId){
-  const roundIdx = ROUNDS.findIndex(r=>r.matches.includes(matchId));
+  const roundIdx=ROUNDS.findIndex(r=>r.matches.includes(matchId));
   for(let j=roundIdx+1;j<ROUNDS.length;j++){
-    ROUNDS[j].matches.forEach(id=>{
-      const teams = getMatchTeams(id, state._adminDraft);
-      if(state._adminDraft[id] && !teams.includes(state._adminDraft[id])) delete state._adminDraft[id];
-    });
+    ROUNDS[j].matches.forEach(id=>{ const teams=getMatchTeams(id, state._adminDraft); if(state._adminDraft[id] && !teams.includes(state._adminDraft[id])) delete state._adminDraft[id]; });
   }
 }
 function adminPick(matchId, teamId){ state._adminDraft[matchId]=teamId; clearAdminDownstream(matchId); renderAdmin(); }
 
 function renderAdmin(){
-  const rs = MIRROR.core.roundState || {currentIndex:0};
-  if(!state._adminDraft) state._adminDraft = JSON.parse(JSON.stringify(MIRROR.core.results||{}));
-  const app = document.getElementById("app");
-  const currentIdx = rs.currentIndex;
-  const tournamentDone = currentIdx >= ROUNDS.length;
-  let html = `<div class="stadium-header">
-    <span class="eyebrow">ADMIN PANEL</span>
-    <h1 class="title">لوحة <span>التحكم</span></h1>
-  </div>
+  const rs=MIRROR.core.roundState||{currentIndex:0};
+  if(!state._adminDraft) state._adminDraft=JSON.parse(JSON.stringify(MIRROR.core.results||{}));
+  const app=document.getElementById("app");
+  const currentIdx=rs.currentIndex;
+  const tournamentDone=currentIdx>=ROUNDS.length;
+  let html = `<div class="stadium-header"><span class="eyebrow">ADMIN PANEL</span><h1 class="title">لوحة <span>التحكم</span></h1></div>
   <div class="userbar"><div></div><a onclick="render()">رجوع للموقع</a></div>`;
 
   html += `<div class="card"><h2><span class="num">🚦</span> التحكم بالدور الحالي</h2>
     <div class="counter">الدور المفتوح للتوقعات الآن: <b>${tournamentDone?'انتهت البطولة 🏆':ROUNDS[currentIdx].label}</b></div>`;
   if(!tournamentDone){
-    html += `<div class="btn-row"><button class="btn-gold" onclick="endCurrentRound()">إنهاء الدور وفتح التالي 🎉</button></div>`;
+    const dlVal = (MIRROR.core.roundDeadlines||{})[ROUNDS[currentIdx].key] || "";
+    const dlLocal = dlVal ? new Date(dlVal).toISOString().slice(0,16) : "";
+    html += `<div style="margin-bottom:12px;">
+      <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:6px;">موعد قفل التوقعات لهذا الدور</label>
+      <input type="datetime-local" id="deadlineInput" value="${dlLocal}" style="margin-bottom:8px;">
+      <button class="btn-ghost btn-sm" onclick="saveDeadline()">حفظ الموعد</button>
+    </div>
+    <div class="btn-row"><button class="btn-gold" onclick="endCurrentRound()">إنهاء الدور وفتح التالي 🎉</button></div>`;
   }
   html += `</div>`;
 
   if(!tournamentDone){
     html += `<div class="card"><h2><span class="num">⚽</span> إدخال نتائج الأدوار</h2>`;
     ROUNDS.forEach((r,i)=>{
-      if(i > currentIdx) return;
+      if(i>currentIdx) return;
       html += `<div style="margin-bottom:20px;"><div class="round-title">${r.label} ${i<currentIdx?'(مغلق)':'(الحالي)'}<span class="line"></span></div>`;
       r.matches.forEach(id=>{
-        const teams = getMatchTeams(id, state._adminDraft);
+        const teams=getMatchTeams(id, state._adminDraft);
         if(teams[0] && teams[1]){
-          const tA=TEAM_MAP[teams[0]], tB=TEAM_MAP[teams[1]];
-          const picked = state._adminDraft[id];
+          const tA=TEAM_MAP[teams[0]], tB=TEAM_MAP[teams[1]]; const picked=state._adminDraft[id];
           html += `<div class="match-row">
-            <div class="team-pick ${picked===tA.id?'selected':''}" onclick="adminPick('${id}','${tA.id}')"><span class="flag">${tA.flag}</span><span>${tA.name}</span></div>
+            <div class="team-pick ${picked===tA.id?'selected':''}" onclick="adminPick('${id}','${tA.id}')">${flagImg(tA)}<span>${tA.name}</span></div>
             <div class="vs">VS</div>
-            <div class="team-pick ${picked===tB.id?'selected':''}" onclick="adminPick('${id}','${tB.id}')"><span class="flag">${tB.flag}</span><span>${tB.name}</span></div>
+            <div class="team-pick ${picked===tB.id?'selected':''}" onclick="adminPick('${id}','${tB.id}')">${flagImg(tB)}<span>${tB.name}</span></div>
           </div>`;
-        } else {
-          html += `<div class="match-row tbd"><div class="tbd-label">في انتظار نتيجة سابقة ⏳</div></div>`;
-        }
+        } else { html += `<div class="match-row tbd"><div class="tbd-label">في انتظار نتيجة سابقة ⏳</div></div>`; }
       });
       html += `</div>`;
     });
@@ -669,64 +761,107 @@ function renderAdmin(){
     <div class="btn-row"><button class="btn-gold" onclick="saveAnnouncement()">حفظ الإعلان</button><button class="btn-ghost" onclick="clearAnnouncement()">مسح الإعلان</button></div>
   </div>`;
 
+  html += `<div class="card"><h2><span class="num">📁</span> النسخ الاحتياطي والتصدير</h2>
+    <div class="btn-row">
+      <button class="btn-gold btn-sm" onclick="exportExcel()">تصدير Excel للترتيب</button>
+      <button class="btn-ghost btn-sm" onclick="exportBackup()">تنزيل نسخة احتياطية (JSON)</button>
+      <button class="btn-ghost btn-sm" onclick="triggerImportBackup()">استرجاع نسخة احتياطية</button>
+    </div>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importBackup(event)">
+  </div>`;
+
   html += `<div class="card"><h2><span class="num">🗑️</span> إدارة الحسابات</h2>`;
-  const users = Object.entries(MIRROR.users||{});
+  const users=Object.entries(MIRROR.users||{});
   if(users.length===0){ html += `<div class="empty">محدش مسجل لسه</div>`; }
-  else {
-    users.forEach(([key,u])=>{
-      html += `<div class="group-card" style="cursor:default;"><div>${escapeHtml(u.name||key)}</div><button class="btn-danger btn-sm" onclick="deleteUser('${key}')">حذف الحساب</button></div>`;
-    });
-  }
+  else { users.forEach(([key,u])=>{ html += `<div class="group-card" style="cursor:default;"><div>${escapeHtml(u.name||key)}</div><button class="btn-danger btn-sm" onclick="deleteUser('${key}')">حذف الحساب</button></div>`; }); }
   html += `</div>`;
 
   app.innerHTML = html;
 }
+async function saveDeadline(){
+  const val=document.getElementById("deadlineInput").value;
+  if(!val){ showToast("اختار موعد الأول"); return; }
+  const round=ROUNDS[(MIRROR.core.roundState||{currentIndex:0}).currentIndex];
+  const iso=new Date(val).toISOString();
+  await fbSet(`core/roundDeadlines/${round.key}`, iso);
+  MIRROR.core.roundDeadlines[round.key]=iso;
+  showToast("اتحفظ الموعد ✅");
+}
 async function saveAdminResults(){
   await fbSet("core/results", state._adminDraft);
-  MIRROR.core.results = JSON.parse(JSON.stringify(state._adminDraft));
-  showToast("اتحفظت النتائج ✅");
-  renderAdmin();
+  MIRROR.core.results=JSON.parse(JSON.stringify(state._adminDraft));
+  showToast("اتحفظت النتائج ✅"); renderAdmin();
 }
 async function endCurrentRound(){
-  const rs = MIRROR.core.roundState || {currentIndex:0};
-  const round = ROUNDS[rs.currentIndex];
-  const allFilled = round.matches.every(id => MIRROR.core.results && MIRROR.core.results[id]);
+  const rs=MIRROR.core.roundState||{currentIndex:0};
+  const round=ROUNDS[rs.currentIndex];
+  const allFilled=round.matches.every(id=>MIRROR.core.results && MIRROR.core.results[id]);
   if(!allFilled){ showToast("لازم تحفظ نتائج كل مباريات الدور الأول"); return; }
-  const rows = computeLeaderboardRows();
-  const leader = rows[0];
-  await fbSet(`core/roundHistory/${round.key}`, {leaderName: leader?leader.user:"-", points: leader?leader.total:0, closedAt: Date.now()});
-  MIRROR.core.roundHistory[round.key] = {leaderName: leader?leader.user:"-", points: leader?leader.total:0, closedAt: Date.now()};
+  const rows=computeLeaderboardRows();
+  const leader=rows[0];
+  const scoresObj=Object.fromEntries(rows.map(r=>[r.key,r.total]));
+  const entry={leaderName:leader?leader.user:"-", points:leader?leader.total:0, closedAt:Date.now(), scores:scoresObj};
+  await fbSet(`core/roundHistory/${round.key}`, entry);
+  MIRROR.core.roundHistory[round.key]=entry;
   seenRoundHistoryKeys.add(round.key);
-  const nextIndex = rs.currentIndex + 1;
-  await fbSet("core/roundState", {currentIndex: nextIndex});
-  MIRROR.core.roundState = {currentIndex: nextIndex};
-  showToast("تم إنهاء الدور 🎉");
-  renderAdmin();
+  const nextIndex=rs.currentIndex+1;
+  await fbSet("core/roundState", {currentIndex:nextIndex});
+  MIRROR.core.roundState={currentIndex:nextIndex};
+  showToast("تم إنهاء الدور 🎉"); renderAdmin();
 }
 async function saveAnnouncement(){
-  const val = document.getElementById("announceInput").value.trim();
-  await fbSet("core/announcement", val); MIRROR.core.announcement = val;
+  const val=document.getElementById("announceInput").value.trim();
+  await fbSet("core/announcement", val); MIRROR.core.announcement=val;
   showToast("اتحفظ الإعلان"); updateTicker();
 }
 async function clearAnnouncement(){
-  await fbSet("core/announcement", ""); MIRROR.core.announcement = "";
+  await fbSet("core/announcement", ""); MIRROR.core.announcement="";
   showToast("اتمسح الإعلان"); updateTicker(); renderAdmin();
 }
 async function deleteUser(userKey){
   if(!confirm("متأكد إنك عايز تمسح الحساب ده نهائيًا؟")) return;
-  await fbSet("users/"+userKey, null);
-  await fbSet("predictions/"+userKey, null);
-  await fbSet("submissions/"+userKey, null);
+  await fbSet("users/"+userKey, null); await fbSet("predictions/"+userKey, null); await fbSet("submissions/"+userKey, null);
   delete MIRROR.users[userKey]; delete MIRROR.predictions[userKey]; delete MIRROR.submissions[userKey];
-  for(const [gid, g] of Object.entries(MIRROR.groups||{})){
-    if((g.members||[]).includes(userKey)){
-      const newMembers = g.members.filter(m=>m!==userKey);
-      await fbSet(`groups/${gid}/members`, newMembers);
-      g.members = newMembers;
-    }
+  for(const [gid,g] of Object.entries(MIRROR.groups||{})){
+    if((g.members||[]).includes(userKey)){ const newMembers=g.members.filter(m=>m!==userKey); await fbSet(`groups/${gid}/members`, newMembers); g.members=newMembers; }
   }
-  showToast("اتمسح الحساب");
-  renderAdmin();
+  showToast("اتمسح الحساب"); renderAdmin();
+}
+
+/* ============ EXPORT / BACKUP ============ */
+function exportExcel(){
+  const results=MIRROR.core.results||{};
+  const rows=computeLeaderboardRows();
+  const totalMatches=decidedMatchesCount();
+  const sheetData=rows.map((r,i)=>({ "الترتيب":i+1, "الاسم":r.user, "النقاط":r.total, "الدقة %": totalMatches?Math.round(r.total/totalMatches*100):0 }));
+  const ws=XLSX.utils.json_to_sheet(sheetData);
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "الترتيب العام");
+  XLSX.writeFile(wb, "نتائج-المحنكين.xlsx");
+}
+function exportBackup(){
+  const data={core:MIRROR.core, predictions:MIRROR.predictions, submissions:MIRROR.submissions, users:MIRROR.users, groups:MIRROR.groups, chats:MIRROR.chats};
+  const blob=new Blob([JSON.stringify(data,null,2)], {type:"application/json"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a"); a.href=url; a.download="backup-almuhannakin-"+Date.now()+".json"; a.click();
+  URL.revokeObjectURL(url);
+}
+function triggerImportBackup(){ document.getElementById("importFile").click(); }
+async function importBackup(evt){
+  const file=evt.target.files[0]; if(!file) return;
+  if(!confirm("هيتم استبدال كل بيانات الموقع الحالية بالنسخة دي. متأكد؟")){ evt.target.value=""; return; }
+  const text=await file.text();
+  try{
+    const data=JSON.parse(text);
+    await fbSet("core", data.core||{});
+    await fbSet("predictions", data.predictions||{});
+    await fbSet("submissions", data.submissions||{});
+    await fbSet("users", data.users||{});
+    await fbSet("groups", data.groups||{});
+    await fbSet("chats", data.chats||{});
+    showToast("اترجعت النسخة الاحتياطية ✅ (هتتحدث خلال ثواني)");
+  }catch(e){ showToast("الملف مش صالح"); }
+  evt.target.value="";
 }
 
 /* ============ INIT ============ */
