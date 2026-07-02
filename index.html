@@ -126,9 +126,9 @@
   .celebrate-title{font-family:'Cairo',sans-serif;font-weight:900;font-size:20px;color:var(--gold);margin-bottom:6px;}
   .celebrate-sub{color:var(--pitch-line);font-size:15px;margin-bottom:18px;}
 
-  .ticker-wrap{position:fixed;bottom:0;left:0;right:0;background:var(--gold);color:var(--ink);overflow:hidden;white-space:nowrap;padding:9px 0;z-index:60;border-top:2px solid var(--gold-dim);display:none;}
-  .ticker-track{display:inline-block;padding-right:60px;animation:ticker-scroll 16s linear infinite;font-family:'Cairo',sans-serif;font-weight:700;font-size:13px;}
-  @keyframes ticker-scroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+  .ticker-wrap{position:fixed;bottom:0;left:0;right:0;background:var(--gold);color:var(--ink);overflow:hidden;white-space:nowrap;padding:9px 0;z-index:60;border-top:2px solid var(--gold-dim);display:none;direction:ltr;}
+  .ticker-track{display:inline-block;white-space:nowrap;animation:ticker-scroll 16s linear infinite;font-family:'Cairo',sans-serif;font-weight:700;font-size:13px;}
+  @keyframes ticker-scroll{0%{transform:translateX(100%);}100%{transform:translateX(-100%);}}
 </style>
 </head>
 <body>
@@ -407,11 +407,11 @@ async function render(){
     <div class="conn"><span class="dot" id="connDot"></span> <span>متصل لحظيًا بقاعدة البيانات</span></div>
     <div class="userbar"><div>أهلاً، <b>${escapeHtml(state.username)}</b></div><a onclick="logout()">تسجيل خروج</a></div>
     <div class="tabs">
-      <button class="tab ${state.tab==='predict'?'active':''}" onclick="setTab('predict')">توقعاتي</button>
-      <button class="tab ${state.tab==='global'?'active':''}" onclick="setTab('global')">الترتيب العام</button>
-      <button class="tab ${state.tab==='groups'?'active':''}" onclick="setTab('groups')">مجموعاتي</button>
-      <button class="tab ${state.tab==='profile'?'active':''}" onclick="setTab('profile')">حسابي</button>
-      <button class="tab ${state.tab==='schedule'?'active':''}" onclick="setTab('schedule')">الجدول</button>
+      <button class="tab ${state.tab==='predict'?'active':''}" data-tab="predict" onclick="setTab('predict')">توقعاتي</button>
+      <button class="tab ${state.tab==='global'?'active':''}" data-tab="global" onclick="setTab('global')">الترتيب العام</button>
+      <button class="tab ${state.tab==='groups'?'active':''}" data-tab="groups" onclick="setTab('groups')">مجموعاتي</button>
+      <button class="tab ${state.tab==='profile'?'active':''}" data-tab="profile" onclick="setTab('profile')">حسابي</button>
+      <button class="tab ${state.tab==='schedule'?'active':''}" data-tab="schedule" onclick="setTab('schedule')">الجدول</button>
     </div>
     <div id="tabContent"></div>
   `;
@@ -452,7 +452,10 @@ async function doLogin(){
   await render();
 }
 function logout(){ state.username=null; state.userKey=null; state.draft={}; state.screen="login"; render(); }
-function setTab(t){ state.tab=t; state.groupView=null; if(t==='profile') state.profileView=null; renderTabOnly(); }
+function setTab(t){ state.tab=t; state.groupView=null; if(t==='profile') state.profileView=null; updateTabButtons(); renderTabOnly(); }
+function updateTabButtons(){
+  document.querySelectorAll('.tabs .tab').forEach(btn=>{ btn.classList.toggle('active', btn.getAttribute('data-tab')===state.tab); });
+}
 function viewProfile(key){ state.profileView=key; state.tab='profile'; render(); }
 
 /* ============ PREDICT TAB ============ */
@@ -769,7 +772,7 @@ function renderProfileTab(){
       ${avatarImg(targetKey, 64)}
       <div style="flex:1;">
         <div style="font-size:22px;font-weight:800;color:var(--gold);font-family:'Cairo',sans-serif;">${isLeader?'👑 ':''}${escapeHtml(targetName)}</div>
-        ${isOwn?`<label class="btn-ghost btn-sm" style="display:inline-block;cursor:pointer;margin-top:6px;">تغيير الصورة الشخصية<input type="file" accept="image/*" style="display:none" onchange="uploadProfilePhoto(event)"></label>`:''}
+        ${isOwn?`<button class="btn-ghost btn-sm" style="margin-top:6px;" onclick="document.getElementById('photoInput').click()">تغيير الصورة الشخصية</button><input type="file" id="photoInput" accept="image/*" style="display:none" onchange="uploadProfilePhoto(event)">`:''}
       </div>
     </div>
     <div class="counter" style="margin-top:10px;">الترتيب العام: <b>#${rank||'-'}</b> &nbsp;|&nbsp; مجموع النقاط: <b>${total}</b> &nbsp;|&nbsp; الدقة: <b>${accuracyPct(total)}%</b></div>
@@ -895,7 +898,8 @@ async function saveDeadline(){
   showToast("اتحفظ الموعد ✅");
 }
 async function saveAdminResults(){
-  await fbSet("core/results", state._adminDraft);
+  const ok = await fbSet("core/results", state._adminDraft);
+  if(!ok){ showToast("❌ فشل الحفظ - تأكد إن صلاحيات Firebase لسه public"); return; }
   MIRROR.core.results=JSON.parse(JSON.stringify(state._adminDraft));
   showToast("اتحفظت النتائج ✅"); renderAdmin();
 }
@@ -908,11 +912,13 @@ async function endCurrentRound(){
   const leader=rows[0];
   const scoresObj=Object.fromEntries(rows.map(r=>[r.key,r.total]));
   const entry={leaderName:leader?leader.user:"-", points:leader?leader.total:0, closedAt:Date.now(), scores:scoresObj};
-  await fbSet(`core/roundHistory/${round.key}`, entry);
+  const ok1 = await fbSet(`core/roundHistory/${round.key}`, entry);
+  if(!ok1){ showToast("❌ فشل حفظ نتيجة الدور - تأكد من صلاحيات Firebase"); return; }
   MIRROR.core.roundHistory[round.key]=entry;
   seenRoundHistoryKeys.add(round.key);
   const nextIndex=rs.currentIndex+1;
-  await fbSet("core/roundState", {currentIndex:nextIndex});
+  const ok2 = await fbSet("core/roundState", {currentIndex:nextIndex});
+  if(!ok2){ showToast("❌ فشل فتح الدور الجديد - جرب تاني"); return; }
   MIRROR.core.roundState={currentIndex:nextIndex};
   showToast("تم إنهاء الدور 🎉"); renderAdmin();
 }
@@ -927,7 +933,9 @@ async function clearAnnouncement(){
 }
 async function deleteUser(userKey){
   if(!confirm("متأكد إنك عايز تمسح الحساب ده نهائيًا؟")) return;
-  await fbSet("users/"+userKey, null); await fbSet("predictions/"+userKey, null); await fbSet("submissions/"+userKey, null);
+  const ok = await fbSet("users/"+userKey, null);
+  if(!ok){ showToast("❌ فشل الحذف - تأكد إن صلاحيات Firebase لسه public"); return; }
+  await fbSet("predictions/"+userKey, null); await fbSet("submissions/"+userKey, null);
   delete MIRROR.users[userKey]; delete MIRROR.predictions[userKey]; delete MIRROR.submissions[userKey];
   for(const [gid,g] of Object.entries(MIRROR.groups||{})){
     if((g.members||[]).includes(userKey)){ const newMembers=g.members.filter(m=>m!==userKey); await fbSet(`groups/${gid}/members`, newMembers); g.members=newMembers; }
