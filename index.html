@@ -70,6 +70,9 @@
   .team-pick.correct{border-color:var(--green-ok);background:rgba(63,207,122,0.14);color:var(--green-ok);font-weight:700;}
   .team-pick.wrong{border-color:var(--away-red);opacity:0.55;}
   .flag-img{width:22px;height:16px;object-fit:cover;border-radius:2px;box-shadow:0 0 0 1px rgba(255,255,255,0.15);flex-shrink:0;}
+  .avatar-img{border-radius:50%;object-fit:cover;box-shadow:0 0 0 2px var(--gold);flex-shrink:0;}
+  .avatar-fallback{border-radius:50%;background:var(--pitch-night);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px rgba(237,234,224,0.15);flex-shrink:0;}
+  .avatar-row{display:flex;align-items:center;gap:8px;}
   .vs{font-family:'Cairo',sans-serif;font-size:11px;color:var(--muted);padding:0 4px;}
   .tbd-label{flex:1;text-align:center;font-size:13px;color:var(--muted);padding:10px;}
 
@@ -177,6 +180,47 @@ function flagImg(t){
   if(!t) return "";
   return `<img src="https://flagcdn.com/w40/${t.iso}.png" class="flag-img" alt="" onerror="this.outerHTML='<span>${t.flag}</span>'">`;
 }
+function avatarImg(userKey, size){
+  const u = MIRROR.users[userKey];
+  const s = size||32;
+  if(u && u.photo){ return `<img src="${u.photo}" class="avatar-img" style="width:${s}px;height:${s}px;">`; }
+  return `<div class="avatar-fallback" style="width:${s}px;height:${s}px;font-size:${Math.round(s*0.55)}px;">👤</div>`;
+}
+function resizeImageFile(file, maxDim){
+  return new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+    reader.onload = (e)=>{
+      const img = new Image();
+      img.onload = ()=>{
+        let w=img.width, h=img.height;
+        if(w>h){ if(w>maxDim){ h=Math.round(h*maxDim/w); w=maxDim; } } else { if(h>maxDim){ w=Math.round(w*maxDim/h); h=maxDim; } }
+        const canvas=document.createElement("canvas");
+        canvas.width=w; canvas.height=h;
+        const ctx=canvas.getContext("2d");
+        ctx.drawImage(img,0,0,w,h);
+        resolve(canvas.toDataURL("image/jpeg", 0.75));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+async function uploadProfilePhoto(evt){
+  const file = evt.target.files[0];
+  if(!file) return;
+  if(!file.type.startsWith("image/")){ showToast("لازم تختار صورة"); evt.target.value=""; return; }
+  showToast("جاري رفع الصورة...");
+  try{
+    const dataUrl = await resizeImageFile(file, 200);
+    await fbPatch("users/"+state.userKey, {photo: dataUrl});
+    MIRROR.users[state.userKey] = {...(MIRROR.users[state.userKey]||{}), photo: dataUrl};
+    showToast("اتحفظت الصورة ✅");
+    renderTabOnly();
+  }catch(e){ showToast("حصلت مشكلة في رفع الصورة"); }
+  evt.target.value="";
+}
 
 /* ============ REAL BRACKET (Round of 32 → Final) ============ */
 const MATCHES = {
@@ -197,7 +241,14 @@ const ROUNDS = [
   {key:"sf", label:"نصف النهائي", matches:["m29","m30"], dateText:"14 - 15 يوليو"},
   {key:"final", label:"النهائي", matches:["m31"], dateText:"19 يوليو"}
 ];
+const MATCH_DATES = {
+  m1:"28 يونيو", m2:"29 يونيو", m3:"29 يونيو", m4:"30 يونيو", m5:"30 يونيو", m6:"30 يونيو",
+  m7:"1 يوليو", m8:"1 يوليو", m9:"1 يوليو", m10:"1 يوليو",
+  m11:"2 يوليو", m12:"2 يوليو", m13:"2 يوليو",
+  m14:"3 يوليو", m15:"3 يوليو", m16:"3 يوليو"
+};
 const MATCH_IDS = Object.keys(MATCHES);
+function matchDateLabel(id){ return MATCH_DATES[id] ? `<div style="font-size:10px;color:var(--muted);text-align:center;margin-bottom:4px;">📅 ${MATCH_DATES[id]} (تقريبي بتوقيت القاهرة)</div>` : ""; }
 function getMatchTeams(matchId, resultsObj){
   const m = MATCHES[matchId];
   if(m.teams) return m.teams;
@@ -437,7 +488,7 @@ function renderPredictTab(){
     html += `<div class="counter" style="margin-bottom:14px;">✅ اتبعتت توقعاتك للدور ده — استنى النتائج الفعلية</div>`;
     round.matches.forEach(id=>{ const teams=getMatchTeams(id,results); const tA=TEAM_MAP[teams[0]], tB=TEAM_MAP[teams[1]]; html+=matchRowReadOnly(tA,tB,myPreds[id],null); });
   } else {
-    round.matches.forEach(id=>{ const teams=getMatchTeams(id,results); const tA=TEAM_MAP[teams[0]], tB=TEAM_MAP[teams[1]]; html+=matchRowPickable(id,tA,tB,state.draft[id]); });
+    round.matches.forEach(id=>{ const teams=getMatchTeams(id,results); const tA=TEAM_MAP[teams[0]], tB=TEAM_MAP[teams[1]]; html+=matchDateLabel(id)+matchRowPickable(id,tA,tB,state.draft[id]); });
     const filled=round.matches.filter(id=>state.draft[id]).length;
     html += `<div class="counter">اخترت <b>${filled}</b> من <b>${round.matches.length}</b></div>`;
     html += `<div class="btn-row"><button class="btn-gold" ${filled<round.matches.length?'disabled style="opacity:.4"':''} onclick="submitRoundPredictions('${round.key}')">إرسال توقعاتي (نهائي، مش هتقدر تعدلها)</button></div>`;
@@ -486,7 +537,7 @@ function renderGlobalTab(){
     rows.forEach((r,i)=>{
       const rankClass=i===0?'g1':i===1?'g2':i===2?'g3':'';
       const crown=(i===0 && r.total>0)?'<span class="crown">👑</span>':'';
-      html += `<tr class="${r.user===state.username?'me':''}"><td class="rank ${rankClass}">${i+1}</td><td onclick="viewProfile('${r.key}')" style="cursor:pointer;text-decoration:underline;text-decoration-color:rgba(244,183,49,0.25);">${crown}${escapeHtml(r.user)}${r.user===state.username?' (انت)':''}</td><td>${r.total}</td><td class="acc-pill">${accuracyPct(r.total)}%</td></tr>`;
+      html += `<tr class="${r.user===state.username?'me':''}"><td class="rank ${rankClass}">${i+1}</td><td onclick="viewProfile('${r.key}')" style="cursor:pointer;"><span class="avatar-row" style="display:inline-flex;text-decoration:underline;text-decoration-color:rgba(244,183,49,0.25);">${avatarImg(r.key,22)}${crown}${escapeHtml(r.user)}${r.user===state.username?' (انت)':''}</span></td><td>${r.total}</td><td class="acc-pill">${accuracyPct(r.total)}%</td></tr>`;
     });
     html += `</tbody></table>`;
   }
@@ -537,7 +588,7 @@ function renderGroupsTab(){
     rows.forEach((r,i)=>{
       const rankClass=i===0?'g1':i===1?'g2':i===2?'g3':'';
       const crown=(i===0 && r.total>0)?'<span class="crown">👑</span>':'';
-      html += `<tr class="${r.user===state.username?'me':''}"><td class="rank ${rankClass}">${i+1}</td><td onclick="viewProfile('${r.key}')" style="cursor:pointer;text-decoration:underline;text-decoration-color:rgba(244,183,49,0.25);">${crown}${escapeHtml(r.user)}</td><td>${r.total}</td><td class="acc-pill">${accuracyPct(r.total)}%</td></tr>`;
+      html += `<tr class="${r.user===state.username?'me':''}"><td class="rank ${rankClass}">${i+1}</td><td onclick="viewProfile('${r.key}')" style="cursor:pointer;"><span class="avatar-row" style="display:inline-flex;text-decoration:underline;text-decoration-color:rgba(244,183,49,0.25);">${avatarImg(r.key,22)}${crown}${escapeHtml(r.user)}</span></td><td>${r.total}</td><td class="acc-pill">${accuracyPct(r.total)}%</td></tr>`;
     });
     html += `</tbody></table></div>`;
     html += renderGroupDetailedPicks(g);
@@ -690,7 +741,7 @@ function renderAllUsersBrowse(){
     <div id="userListBox">`;
   if(users.length===0){ html += `<div class="empty">مفيش لاعبين تانيين مسجلين لسه</div>`; }
   users.forEach(u=>{
-    html += `<div class="group-card user-row" data-name="${escapeHtml(u.name.toLowerCase())}" onclick="viewProfile('${u.key}')"><div style="font-weight:700;">${escapeHtml(u.name)}</div><div class="meta">عرض الحساب ←</div></div>`;
+    html += `<div class="group-card user-row" data-name="${escapeHtml(u.name.toLowerCase())}" onclick="viewProfile('${u.key}')"><div class="avatar-row"><span>${avatarImg(u.key,32)}</span><div style="font-weight:700;">${escapeHtml(u.name)}</div></div><div class="meta">عرض الحساب ←</div></div>`;
   });
   html += `</div></div>`;
   return html;
@@ -714,7 +765,13 @@ function renderProfileTab(){
   let html = `<div class="card">`;
   if(!isOwn) html += `<a onclick="viewProfile(null)" style="color:var(--gold);cursor:pointer;font-size:13px;">← رجوع لحسابي</a>`;
   html += `<h2 style="margin-top:${isOwn?'0':'10px'};"><span class="num">👤</span> ${isOwn?'حسابي':'حساب لاعب'}</h2>
-    <div style="font-size:22px;font-weight:800;color:var(--gold);font-family:'Cairo',sans-serif;">${isLeader?'👑 ':''}${escapeHtml(targetName)}</div>
+    <div class="avatar-row" style="margin-bottom:6px;">
+      ${avatarImg(targetKey, 64)}
+      <div style="flex:1;">
+        <div style="font-size:22px;font-weight:800;color:var(--gold);font-family:'Cairo',sans-serif;">${isLeader?'👑 ':''}${escapeHtml(targetName)}</div>
+        ${isOwn?`<label class="btn-ghost btn-sm" style="display:inline-block;cursor:pointer;margin-top:6px;">تغيير الصورة الشخصية<input type="file" accept="image/*" style="display:none" onchange="uploadProfilePhoto(event)"></label>`:''}
+      </div>
+    </div>
     <div class="counter" style="margin-top:10px;">الترتيب العام: <b>#${rank||'-'}</b> &nbsp;|&nbsp; مجموع النقاط: <b>${total}</b> &nbsp;|&nbsp; الدقة: <b>${accuracyPct(total)}%</b></div>
     <div style="margin-top:10px;">${badges.map(b=>`<span class="badge-pill">${escapeHtml(b)}</span>`).join("")}</div>
   </div>`;
@@ -794,7 +851,7 @@ function renderAdmin(){
         const teams=getMatchTeams(id, state._adminDraft);
         if(teams[0] && teams[1]){
           const tA=TEAM_MAP[teams[0]], tB=TEAM_MAP[teams[1]]; const picked=state._adminDraft[id];
-          html += `<div class="match-row">
+          html += `${matchDateLabel(id)}<div class="match-row">
             <div class="team-pick ${picked===tA.id?'selected':''}" onclick="adminPick('${id}','${tA.id}')">${flagImg(tA)}<span>${tA.name}</span></div>
             <div class="vs">VS</div>
             <div class="team-pick ${picked===tB.id?'selected':''}" onclick="adminPick('${id}','${tB.id}')">${flagImg(tB)}<span>${tB.name}</span></div>
